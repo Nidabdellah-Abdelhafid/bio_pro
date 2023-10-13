@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="floatType" value="float" dbms="mysql"/>
+    <property name="clobType" value="clob" dbms="mysql"/>
+    <property name="blobType" value="longblob" dbms="mysql"/>
+    <property name="uuidType" value="varchar(36)" dbms="mysql"/>
+    <property name="datetimeType" value="datetime(6)" dbms="mysql"/>
+
+    <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003810_added_entity_Medecin.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003811_added_entity_Patient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003812_added_entity_Boitier.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003813_added_entity_Capteur.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003814_added_entity_Mesure.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003815_added_entity_Video.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003816_added_entity_ExtraUser.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003817_added_entity_MedecinPatient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003818_added_entity_BoitierPatient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003819_added_entity_BoitierCapteur.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20231010003810_added_entity_constraints_Medecin.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003811_added_entity_constraints_Patient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003814_added_entity_constraints_Mesure.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003815_added_entity_constraints_Video.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003816_added_entity_constraints_ExtraUser.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003817_added_entity_constraints_MedecinPatient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003818_added_entity_constraints_BoitierPatient.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20231010003819_added_entity_constraints_BoitierCapteur.xml" relativeToChangelogFile="false"/>
+    <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+</databaseChangeLog>

@@ -1,0 +1,41 @@
+{
+  "applications": "*",
+  "changelogDate": "20231010003812",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "boitier",
+  "fields": [
+    {
+      "fieldName": "type",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "ref",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nbrBranche",
+      "fieldType": "Integer"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Boitier",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "boitierCapteur",
+      "otherEntityRelationshipName": "boitiers",
+      "relationshipName": "boitierCapteurs",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "boitierPatient",
+      "otherEntityRelationshipName": "boitiers",
+      "relationshipName": "boitierPatients",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "no"
+}

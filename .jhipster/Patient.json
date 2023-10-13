@@ -1,0 +1,51 @@
+{
+  "applications": "*",
+  "changelogDate": "20231010003811",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "patient",
+  "fields": [
+    {
+      "fieldName": "profession",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Patient",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "extraUser",
+      "ownerSide": true,
+      "relationshipName": "extraUserId",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "mesure",
+      "otherEntityRelationshipName": "patient",
+      "relationshipName": "mesure",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "video",
+      "otherEntityRelationshipName": "patients",
+      "relationshipName": "videos",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "medecinPatient",
+      "otherEntityRelationshipName": "patients",
+      "relationshipName": "medecinPatients",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "boitierPatient",
+      "otherEntityRelationshipName": "patients",
+      "relationshipName": "boitierPatients",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "no"
+}

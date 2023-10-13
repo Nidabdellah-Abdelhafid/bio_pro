@@ -1,0 +1,33 @@
+{
+  "applications": "*",
+  "changelogDate": "20231010003810",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "medecin",
+  "fields": [
+    {
+      "fieldName": "specialite",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Medecin",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "extraUser",
+      "ownerSide": true,
+      "relationshipName": "extraUserId",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "medecinPatient",
+      "otherEntityRelationshipName": "medecins",
+      "relationshipName": "medecinPatients",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "no"
+}
