@@ -35,7 +35,7 @@ export const BoitierUpdate = () => {
   const [selectedCapteurs, setSelectedCapteurs] = useState('');
   const [elementList, setElementList] = useState([]);
   const [step, setStep] = useState(1);
-  const [elementt, setElementt] = useState({});
+  const [initialCapteurs, setInitialCapteurs] = useState([]);
 
   const [formData1, setFormData1] = useState(() => {
       return {
@@ -46,16 +46,9 @@ export const BoitierUpdate = () => {
         branche: ''
       };
   });
+
   useEffect(() => {
     if (!isNew) {
-      for (const element of boitierCapteurEntities){
-        if (boitierEntity.id === element.boitiers.id) {
-        setElementt({ branche: element.branche,
-          capteur: element.capteurs,
-          etat: element.etat})
-          setElementList([...elementList, element]);
-      }
-      }
       setFormData1({
         type: boitierEntity.type,
         ref: boitierEntity.ref,
@@ -63,8 +56,29 @@ export const BoitierUpdate = () => {
         capteurs: '',
         branche: ''
       });
+
+      // Log data for debugging
+      console.log("boitierEntity:", boitierEntity);
+      console.log("boitierCapteurEntities:", boitierCapteurEntities);
+
+      // Fetch related data from boitierCapteurEntities
+      const relatedCapteurs = boitierCapteurEntities.filter((entry) => entry.boitiers.id === boitierEntity.id);
+
+      // Log related data for debugging
+      console.log("relatedCapteurs:", relatedCapteurs);
+
+      // Populate elementList with related data
+      setElementList(relatedCapteurs.map((entry) => ({
+        branche: entry.branche,
+        capteur: entry.capteurs,
+        etat: entry.etat
+      })));
+
+      // Log elementList for debugging
+      console.log("elementList:", elementList);
     }
-  }, [boitierEntity]);
+  }, [boitierEntity, boitierCapteurEntities]);
+
 
   const handleEtatChange = (event) => {
     setEtatChecked(event.target.checked);
@@ -291,8 +305,8 @@ return (
             <thead>
             <tr>
             <th>Capteurs</th>
-            <th>Reference</th>
-            <th>Resolution</th>
+            <th>branche</th>
+            <th>etat</th>
             <th>Action</th>
             </tr>
             </thead>
@@ -301,7 +315,7 @@ return (
             <tr key={index}>
             <td>{element.capteur.id}</td>
             <td>{element.branche}</td>
-            <td>{element.etat }</td>
+            <td>{element.etat.toString()}</td>
             <td>
             <button
             className="btn btn-danger"
