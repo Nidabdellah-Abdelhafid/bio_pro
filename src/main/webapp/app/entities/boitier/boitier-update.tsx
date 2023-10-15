@@ -57,15 +57,8 @@ export const BoitierUpdate = () => {
         branche: ''
       });
 
-      // Log data for debugging
-      console.log("boitierEntity:", boitierEntity);
-      console.log("boitierCapteurEntities:", boitierCapteurEntities);
-
-      // Fetch related data from boitierCapteurEntities
       const relatedCapteurs = boitierCapteurEntities.filter((entry) => entry.boitiers.id === boitierEntity.id);
 
-      // Log related data for debugging
-      console.log("relatedCapteurs:", relatedCapteurs);
 
       // Populate elementList with related data
       setElementList(relatedCapteurs.map((entry) => ({
@@ -75,7 +68,6 @@ export const BoitierUpdate = () => {
       })));
 
       // Log elementList for debugging
-      console.log("elementList:", elementList);
     }
   }, [boitierEntity, boitierCapteurEntities]);
 
