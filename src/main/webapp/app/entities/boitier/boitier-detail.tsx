@@ -3,22 +3,23 @@ import { Link, useParams } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
 import { getEntity } from './boitier.reducer';
+import { getEntities } from 'app/entities/boitier-capteur/boitier-capteur.reducer';
 
 export const BoitierDetail = () => {
   const dispatch = useAppDispatch();
-
-  const { id } = useParams<'id'>();
+  const { id } = useParams<{ id: string }>();
+  const boitierEntity = useAppSelector(state => state.boitier.entity);
+  const boitierCapteurList = useAppSelector(state => state.boitierCapteur.entities);
 
   useEffect(() => {
     dispatch(getEntity(id));
+    dispatch(getEntities({}));
   }, []);
 
-  const boitierEntity = useAppSelector(state => state.boitier.entity);
   return (
     <Row>
       <Col md="8">
@@ -50,7 +51,36 @@ export const BoitierDetail = () => {
             </span>
           </dt>
           <dd>{boitierEntity.nbrBranche}</dd>
+          <dt>
+        <span id="capteurs">
+          ses capteurs
+        </span>
+    </dt>
+    {boitierEntity && boitierEntity.type && (
+        boitierCapteurList.length > 0 ? (
+          boitierCapteurList.map(otherEntity => {
+            if (boitierEntity.id === otherEntity.boitiers.id) {
+              return (
+                <Carousel showArrows={true} key={otherEntity.capteurs.id}>
+                <div >
+                  <div>{otherEntity.capteurs.type}</div>
+                </div>
+                <div >
+                  <div>{otherEntity.capteurs.resolution}</div>
+                </div>
+              </Carousel>
+
+              );
+            }
+            return null;
+          })
+        ) : (
+          <span key="not-found">not found</span>
+        ))}
+
+
         </dl>
+
         <Button tag={Link} to="/boitier" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}
           <span className="d-none d-md-inline">

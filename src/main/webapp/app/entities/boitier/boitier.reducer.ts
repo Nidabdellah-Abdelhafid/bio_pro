@@ -32,6 +32,7 @@ export const getEntity = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+
 export const createEntity = createAsyncThunk(
   'boitier/create_entity',
   async (entity: IBoitier, thunkAPI) => {

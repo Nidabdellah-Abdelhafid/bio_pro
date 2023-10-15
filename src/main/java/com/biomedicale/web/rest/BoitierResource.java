@@ -164,6 +164,14 @@ public class BoitierResource {
         Optional<Boitier> boitier = boitierRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(boitier);
     }
+    @GetMapping("/max-boitier/f")
+    public ResponseEntity<Boitier> getMax() {
+        log.debug("fatyyyyyyyyyy : {}");
+        Optional<Boitier> boitier = boitierRepository.findMaxId();
+        return ResponseUtil.wrapOrNotFound(boitier);
+    }
+
+
 
     /**
      * {@code DELETE  /boitiers/:id} : delete the "id" boitier.
