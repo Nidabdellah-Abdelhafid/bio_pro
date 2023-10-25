@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Row, Col, FormText } from 'reactstrap';
@@ -11,8 +12,11 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { IBoitier } from 'app/shared/model/boitier.model';
 import { getEntity, updateEntity, createEntity, reset } from './boitier.reducer';
 import { getEntities as getCapteurs } from 'app/entities/capteur/capteur.reducer';
-import { getEntities as  getEntitiesBoitierCapteur, updateEntity as updateEntityBoitierCapteur, createEntity as createEntityBoitierCapteur } from '../boitier-capteur/boitier-capteur.reducer';
+import { getEntities as  getEntitiesBoitierCapteur, updateEntity as updateEntityBoitierCapteur, createEntity as createEntityBoitierCapteur, deleteEntity as deleteEntityBoitierCapteur } from '../boitier-capteur/boitier-capteur.reducer';
 import './cssFile.css';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft';
+import { faArrowRight, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 export const BoitierUpdate = () => {
   const dispatch = useAppDispatch();
 
@@ -56,26 +60,17 @@ export const BoitierUpdate = () => {
         capteurs: '',
         branche: ''
       });
-
       const relatedCapteurs = boitierCapteurEntities.filter((entry) => entry.boitiers.id === boitierEntity.id);
-
-
-      // Populate elementList with related data
       setElementList(relatedCapteurs.map((entry) => ({
         branche: entry.branche,
         capteur: entry.capteurs,
         etat: entry.etat
       })));
-
-      // Log elementList for debugging
     }
   }, [boitierEntity, boitierCapteurEntities]);
-
-
   const handleEtatChange = (event) => {
     setEtatChecked(event.target.checked);
   };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData1({ ...formData1, [name]: value });
@@ -89,20 +84,33 @@ export const BoitierUpdate = () => {
       capteur: capteurs.find((capteur) => capteur.id === parseInt(formData1.capteurs, 10)),
       etat: etatChecked
     };
-
     setElementList([...elementList, newElement]);
     setFormData1({
       ...formData1,
       capteurs: '',
       branche: '',
     })
-
   };
-
-  const handleRemoveElement = (index) => {
+  const handleRemoveElement = async (index, element) => {
+    const itemToDeleteIndex = boitierCapteurEntities.findIndex(
+      (entry) => entry.capteurs.id === element.capteur.id
+    );
     const updatedList = elementList.filter((_, i) => i !== index);
     setElementList(updatedList);
+    if (itemToDeleteIndex !== -1) {
+      try {
+        const itemToDelete = boitierCapteurEntities[itemToDeleteIndex];
+        await dispatch(deleteEntityBoitierCapteur(itemToDelete.id));
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        const updatedList = elementList.filter((_, i) => i !== index);
+        setElementList(updatedList);
+      } catch (error) {
+        ///consle
+      }
+
+    }
   };
+
   const handleClose = () => {
     navigate('/boitier');
   };
@@ -112,8 +120,8 @@ export const BoitierUpdate = () => {
       dispatch(reset());
     } else {
       dispatch(getEntity(id));
-      dispatch(getEntitiesBoitierCapteur({}));
     }
+    dispatch(getEntitiesBoitierCapteur({}));
     dispatch(getCapteurs({}));
   }, []);
 
@@ -135,23 +143,64 @@ export const BoitierUpdate = () => {
       try {
         const savedEntity = await dispatch(createEntity(entity));
         const newBoitierId = savedEntity.payload["data"];
-        for (const c of elementList){
+        const relatedCapteurs = boitierCapteurEntities.filter((entry) => entry.boitiers.id === entity.id);
+        for (const c of elementList) {
+          let capteurExists = false;
+          for (const a of relatedCapteurs) {
+            if (c.capteur.id === a.capteurs.id) {
+              capteurExists = true;
+              break;
+            }
+          }
+          if (!capteurExists) {
           const boitierCapteurEntityy = {
             branche:c.branche,
             etat:c.etat,
             capteurs:c.capteur,
             boitiers: newBoitierId,
           };
-
           dispatch(createEntityBoitierCapteur(boitierCapteurEntityy));
+        } else {
+          //console.log("ID Capteur existe déjà, ne pas insérer : ", c.capteur.id);
         }
+      }
       }catch (err){
-        console.error("not save!!!");
+        //console.error("not save!!!");
       }
 
     } else {
-      dispatch(updateEntity(entity));
+      try {
+        const savedEntity = await dispatch(updateEntity(entity));
+        const newBoitierId = savedEntity.payload["data"];
+        const relatedCapteurs = boitierCapteurEntities.filter((entry) => entry.boitiers.id === entity.id);
+        for (const c of elementList) {
+          let capteurExists = false;
+
+          for (const a of relatedCapteurs) {
+            if (c.capteur.id === a.capteurs.id) {
+              capteurExists = true;
+              break;
+            }
+          }
+
+          if (!capteurExists) {
+            //console.log("ID Capteur n'existe pas encore, insérer : ", c.capteur.id);
+            const boitierCapteurEntityy = {
+              branche: c.branche,
+              etat: c.etat,
+              capteurs: c.capteur,
+              boitiers: newBoitierId,
+            };
+            dispatch(createEntityBoitierCapteur(boitierCapteurEntityy));
+          } else {
+            //console.log("ID Capteur existe déjà, ne pas insérer : ", c.capteur.id);
+          }
+        }
+      } catch (err) {
+        //console.error("not update!!!");
+      }
     }
+
   };
 
   const defaultValues = () =>
@@ -197,13 +246,13 @@ return (
         <div className="label">Step 2</div>
       </div>
     </div>
-    <Col md="8">
+    <Col md="12">
       {loading ? (
         <p>Loading...</p>
       ) : (
         <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
     {step === 1 ? (
-      <div className="mb-3">
+      <div className="mb-3 offset-3 col-7">
               {!isNew ? (
                 <ValidatedField
                   name="id"
@@ -246,26 +295,38 @@ return (
 
             </div>
     ) : (
-      <div className="d-flex mb-3">
-          <div className="col-8">
-            <ValidatedField
-            id="boitier-capteur-capteurs"
-            name="capteurs"
-            data-cy="capteurs"
-            label={translate('appBiomedicaleApp.boitierCapteur.capteurs')}
-            type="select"
-            value={formData1.capteurs}
-            onChange={handleInputChange}
-            >
-            <option value="" key="0" />
-          {capteurs
-            ? capteurs.map(otherEntity => (
+      <div className="d-flex mb-3 offset-1">
+        <div className="col-5">
+          <ValidatedField
+  id="boitier-capteur-capteurs"
+  name="capteurs"
+  data-cy="capteurs"
+  label={translate('appBiomedicaleApp.boitierCapteur.capteurs')}
+  type="select"
+  value={formData1.capteurs}
+  onChange={handleInputChange}
+>
+  <option value="" key="0" />
+  {capteurs
+    ? capteurs.map((otherEntity) => {
+        const isLinkedToBoitier = boitierCapteurEntities.some(
+          (boitierCapteur) => boitierCapteur.capteurs.id === otherEntity.id
+        );
+        const isAlreadyInList = elementList.some(
+          (element) => element.capteur.id === otherEntity.id
+        );
+        if (!isLinkedToBoitier && !isAlreadyInList) {
+          return (
             <option value={otherEntity.id} key={otherEntity.id}>
-          {otherEntity.type}
+              {otherEntity.type}
             </option>
-            ))
-            : null}
-            </ValidatedField>
+          );
+        }
+        return null;
+      })
+    : null}
+</ValidatedField>
+
             <ValidatedField
             label={translate('appBiomedicaleApp.boitierCapteur.branche')}
             id="boitier-capteur-branche"
@@ -289,66 +350,78 @@ return (
             type="checkbox"
             onChange={handleEtatChange}
             />
-            <button type={"button"} onClick={handleAddElement} className="btn btn-primary">Add Capteur</button>
+<div className="d-flex justify-content-end ">
+  <button type={"button"} onClick={handleAddElement} className="btn btn-info"
+          disabled={!formData1.capteurs || !formData1.branche}
+  >
+    <FontAwesomeIcon icon={faPlus} style={{ background: "none", border: "none" }} />
+       Add
+  </button>
+</div>
+
       </div>
             <br/>
-        <div className="col-8 mx-lg-5">
-            <table className="table table-striped mt-3">
-            <thead>
-            <tr>
-            <th>Capteurs</th>
-            <th>branche</th>
-            <th>etat</th>
-            <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-          {elementList.map((element, index) => (
-            <tr key={index}>
-            <td>{element.capteur.id}</td>
-            <td>{element.branche}</td>
-            <td>{element.etat.toString()}</td>
-            <td>
-            <button
+        <div className="col-6 mx-lg-5">
+        <table className="table table-striped mt-3">
+  <thead className="table-info">
+    <tr>
+      <th scope="col">Capteurs</th>
+      <th scope="col">Branche</th>
+      <th scope="col">État</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {elementList.map((element, index) => (
+      <tr key={index}>
+        <td>{element.capteur.id}</td>
+        <td>{element.branche}</td>
+        <td>{element.etat ? 'Active' : 'Inactive'}</td>
+        <td>
+          <button
             className="btn btn-danger"
-            onClick={() => handleRemoveElement(index)}
-            type={"button"}
-            >
-            Remove
-            </button>
-            </td>
-            </tr>
-            ))}
-            </tbody>
-            </table>
+            onClick={() => handleRemoveElement(index, element)}
+            type="button"
+          >
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
             <br/>
         </div>
       </div>
     )}
-    {step === 2 && (
-      <button type={"button"} className="btn btn-secondary me-2" onClick={handleBack}>
-        Back
-      </button>
-    )}
-    {step === 1 && (
+    <div className="d-flex justify-content ">
+
+   {step === 2 && (
+  <button type={"button"} className="btn btn-secondary me-2" onClick={handleBack}>
+    <FontAwesomeIcon icon={faArrowLeft} /> {/* Utilisation de l'icône de flèche gauche pour le bouton Back */}
+  </button>
+)}
+{step === 1 && (
   <button
-    className="btn btn-primary"
+    className="btn btn-info float-lg-end"
     type="button"
     onClick={handleNext}
     disabled={!formData1.type || !formData1.ref || !formData1.nbrBranche}
   >
-    Next
+    <FontAwesomeIcon icon={faArrowRight} /> {/* Utilisation de l'icône de flèche droite pour le bouton Next */}
   </button>
-)}
 
-    <hr className="my-4" />
-          <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/boitier" replace color="info">
+)}
+</div>
+<hr className="my-4 invisible-hr" />
+          <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/boitier" replace color="primary">
             <FontAwesomeIcon icon="arrow-left" />
             <span className="d-none d-md-inline">
                 <Translate contentKey="entity.action.back">Back</Translate>
                  </span>
           </Button>
-          <Button className="mx-2" color="success" id="save-entity" data-cy="entityCreateSaveButton" type="submit"  disabled={updating || (step === 1 && (!formData1.type || !formData1.ref || !formData1.nbrBranche) || (elementList.length ===0 ))}>
+          <Button className="mx-2 float-lg-end" color="success" id="save-entity" data-cy="entityCreateSaveButton" type="submit"  disabled={updating || (step === 1 && (!formData1.type || !formData1.ref || !formData1.nbrBranche) || (elementList.length ===0 ))}>
             <FontAwesomeIcon icon="save" />
             <Translate contentKey="entity.action.save">Save</Translate>
           </Button>

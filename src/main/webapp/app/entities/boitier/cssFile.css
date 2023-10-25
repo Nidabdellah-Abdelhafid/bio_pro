@@ -36,3 +36,52 @@
 .label {
   margin-left: 5px;
 }
+.progress {
+  display: flex;
+  justify-content: center;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #35daf3;
+  color: #35daf3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin: 0 10px;
+}
+
+.checked {
+  background-color: #14c9e2;
+  color: white;
+}
+
+.divider {
+  border-top: 2px solid #35daf3;
+  flex-grow: 1;
+
+}
+
+.label {
+  margin-left: 5px;
+}
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #e3e3e5;
+}
+.invisible-hr {
+  border-color: white;}

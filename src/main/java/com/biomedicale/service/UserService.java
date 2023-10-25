@@ -94,6 +94,7 @@ public class UserService {
     }
 
     public User registerUser(AdminUserDTO userDTO, String password) {
+        log.debug("Fatiiiiiiiiiiiiiiiii {}", password);
         userRepository
             .findOneByLogin(userDTO.getLogin().toLowerCase())
             .ifPresent(existingUser -> {
@@ -159,7 +160,7 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        String encryptedPassword = passwordEncoder.encode("user");
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());

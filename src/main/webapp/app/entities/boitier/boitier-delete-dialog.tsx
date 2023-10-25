@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 import { Translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getEntities as  getEntitiesBoitierCapteur,deleteEntity as deleteEntityBoitierCapteur} from '../boitier-capteur/boitier-capteur.reducer';
 
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import { getEntity, deleteEntity } from './boitier.reducer';
@@ -19,10 +20,12 @@ export const BoitierDeleteDialog = () => {
   useEffect(() => {
     dispatch(getEntity(id));
     setLoadModal(true);
+    dispatch(getEntitiesBoitierCapteur({}));
   }, []);
 
   const boitierEntity = useAppSelector(state => state.boitier.entity);
   const updateSuccess = useAppSelector(state => state.boitier.updateSuccess);
+  const boitierCapteurEntities = useAppSelector(state => state.boitierCapteur.entities);
 
   const handleClose = () => {
     navigate('/boitier');
@@ -36,7 +39,13 @@ export const BoitierDeleteDialog = () => {
   }, [updateSuccess]);
 
   const confirmDelete = () => {
-    dispatch(deleteEntity(boitierEntity.id));
+        const relatedCapteurs = boitierCapteurEntities.filter((entry) => entry.boitiers.id === boitierEntity.id);
+        if(relatedCapteurs !== null){
+        for(const c of relatedCapteurs){
+          dispatch(deleteEntityBoitierCapteur(c.id));
+        }
+        dispatch(deleteEntity(boitierEntity.id));
+      }
   };
 
   return (

@@ -10,13 +10,13 @@ export interface IMenuItem {
   to: string;
   id?: string;
   'data-cy'?: string;
+  hasAnyAuthorities?: string[];
 }
 
-const MenuItem = (props: IMenuItem) => {
-  const { to, icon, id, children } = props;
-
+const MenuItem: React.FC<IMenuItem> = ({ icon, to, id, 'data-cy': dataCy, hasAnyAuthorities, children }) => {
+  // Votre implémentation de la fonction MenuItem ici
   return (
-    <DropdownItem tag={Link} to={to} id={id} data-cy={props['data-cy']}>
+    <DropdownItem tag={Link} to={to} id={id} data-cy={dataCy}>
       <FontAwesomeIcon icon={icon} fixedWidth /> {children}
     </DropdownItem>
   );
