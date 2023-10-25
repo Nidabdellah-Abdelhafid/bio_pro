@@ -15,7 +15,6 @@ const boitierCapteurList = useAppSelector(state => state.boitierCapteur.entities
 
 let i=0;
 
-
 useEffect(() => {
     dispatch(getEntity(id));
     dispatch(getEntities({}));
