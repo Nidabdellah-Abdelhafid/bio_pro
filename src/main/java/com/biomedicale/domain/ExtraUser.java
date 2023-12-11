@@ -25,6 +25,13 @@ public class ExtraUser implements Serializable {
     @Column(name = "cin")
     private String cin;
 
+    @Lob
+    @Column(name = "photo")
+    private byte[] photo;
+
+    @Column(name = "photo_content_type")
+    private String photoContentType;
+
     @Column(name = "numero_telephone")
     private Double numeroTelephone;
 
@@ -72,6 +79,31 @@ public class ExtraUser implements Serializable {
         this.cin = cin;
     }
 
+    public byte[] getPhoto() {
+        return this.photo;
+    }
+
+    public ExtraUser photo(byte[] photo) {
+        this.setPhoto(photo);
+        return this;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public String getPhotoContentType() {
+        return this.photoContentType;
+    }
+
+    public ExtraUser photoContentType(String photoContentType) {
+        this.photoContentType = photoContentType;
+        return this;
+    }
+
+    public void setPhotoContentType(String photoContentType) {
+        this.photoContentType = photoContentType;
+    }
     public Double getNumeroTelephone() {
         return this.numeroTelephone;
     }

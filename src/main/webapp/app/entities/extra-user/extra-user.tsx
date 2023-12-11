@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
-import { Translate, TextFormat } from 'react-jhipster';
+import {Translate, TextFormat, openFile} from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
@@ -55,6 +55,9 @@ export const ExtraUser = () => {
                   <Translate contentKey="appBiomedicaleApp.extraUser.cin">Cin</Translate>
                 </th>
                 <th>
+                  <Translate contentKey="appBiomedicaleApp.extraUser.photo">Photo</Translate>
+                </th>
+                <th>
                   <Translate contentKey="appBiomedicaleApp.extraUser.numeroTelephone">Numero Telephone</Translate>
                 </th>
                 <th>
@@ -84,6 +87,18 @@ export const ExtraUser = () => {
                     </Button>
                   </td>
                   <td>{extraUser.cin}</td>
+                  <td>
+                    {extraUser.photo ? (
+                      <div>
+                        {extraUser.photoContentType ? (
+                          <a onClick={openFile(extraUser.photoContentType, extraUser.photo)}>
+                            <img src={`data:${extraUser.photoContentType};base64,${extraUser.photo}`} style={{ maxHeight: '30px' }} />
+                            &nbsp;
+                          </a>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </td>
                   <td>{extraUser.numeroTelephone}</td>
                   <td>
                     {extraUser.dateNaissance ? (

@@ -43,6 +43,11 @@ const EntitiesMenu = () => {
           <Translate contentKey="global.menu.entities.extraUser" />
         </MenuItem>
       </PrivateRoute>
+      <PrivateRoute hasAnyAuthorities={[AUTHORITIES.MEDECIN]}>
+        <MenuItem icon="asterisk" to="/boitier-patient">
+          Patient Boitier
+        </MenuItem>
+      </PrivateRoute>
       {/* jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here */}
     </>
   );

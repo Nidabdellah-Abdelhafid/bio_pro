@@ -13,7 +13,7 @@ const BoitierRoutes = () => (
     <Route index element={<Boitier />} />
     <Route path="new" element={<BoitierUpdate />} />
     <Route path=":id">
-      <Route index element={<BoitierDetail />} />
+      <Route index element={<BoitierDetail boitierEntityy={undefined} />} />
       <Route path="edit" element={<BoitierUpdate />} />
       <Route path="delete" element={<BoitierDeleteDialog />} />
     </Route>

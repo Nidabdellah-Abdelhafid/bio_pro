@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -98,12 +99,14 @@ public class AccountResource {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
-    public AdminUserDTO getAccount() {
-        return userService
-            .getUserWithAuthorities()
-            .map(AdminUserDTO::new)
-            .orElseThrow(() -> new AccountResourceException("User could not be found"));
+    public ResponseEntity<AdminUserDTO> getAccount() {
+        Optional<AdminUserDTO> adminUserDTO = userService.getUserWithAuthorities()
+            .map(AdminUserDTO::new);
+
+        return adminUserDTO.map(ResponseEntity::ok)
+            .orElse(ResponseEntity.noContent().build());
     }
+
 
     /**
      * {@code POST  /account} : update the current user information.

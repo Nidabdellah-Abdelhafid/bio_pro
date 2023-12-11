@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Row, Col, FormText } from 'reactstrap';
-import { isNumber, Translate, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
+import {isNumber, Translate, translate, ValidatedBlobField, ValidatedField, ValidatedForm} from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
@@ -100,6 +100,14 @@ export const ExtraUserUpdate = () => {
                 name="cin"
                 data-cy="cin"
                 type="text"
+              />
+              <ValidatedBlobField
+                label={translate('appBiomedicaleApp.extraUser.photo')}
+                id="extra-user-photo"
+                name="photo"
+                data-cy="photo"
+                isImage
+                accept="image/*"
               />
               <ValidatedField
                 label={translate('appBiomedicaleApp.extraUser.numeroTelephone')}

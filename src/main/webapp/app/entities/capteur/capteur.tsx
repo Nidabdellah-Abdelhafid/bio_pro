@@ -52,6 +52,9 @@ export const Capteur = () => {
                   <Translate contentKey="appBiomedicaleApp.capteur.id">ID</Translate>
                 </th>
                 <th>
+                  <Translate contentKey="appBiomedicaleApp.capteur.photo">Photo</Translate>
+                </th>
+                <th>
                   <Translate contentKey="appBiomedicaleApp.capteur.type">Type</Translate>
                 </th>
                 <th>
@@ -60,9 +63,7 @@ export const Capteur = () => {
                 <th>
                   <Translate contentKey="appBiomedicaleApp.capteur.resolution">Resolution</Translate>
                 </th>
-                <th>
-                  <Translate contentKey="appBiomedicaleApp.capteur.photo">Photo</Translate>
-                </th>
+
                 <th>
                   <Translate contentKey="appBiomedicaleApp.capteur.valeurMin">Valeur Min</Translate>
                 </th>
@@ -80,21 +81,24 @@ export const Capteur = () => {
                       {capteur.id}
                     </Button>
                   </td>
-                  <td>{capteur.type}</td>
-                  <td>{capteur.reference}</td>
-                  <td>{capteur.resolution}</td>
                   <td>
                     {capteur.photo ? (
                       <div>
                         {capteur.photoContentType ? (
                           <a onClick={openFile(capteur.photoContentType, capteur.photo)}>
-                            <img src={`data:${capteur.photoContentType};base64,${capteur.photo}`} style={{ maxHeight: '30px' }} />
+                            <img src={`data:${capteur.photoContentType};base64,${capteur.photo}`}  style={{ maxHeight: '50px',width:'70px'}}
+                            />
                             &nbsp;
                           </a>
                         ) : null}
                       </div>
-                    ) : null}
+
+                  ) : null}
                   </td>
+                  <td>{capteur.type}</td>
+                  <td>{capteur.reference}</td>
+                  <td>{capteur.resolution}</td>
+
                   <td>{capteur.valeurMin}</td>
                   <td>{capteur.valeurMax}</td>
                   <td className="text-end">

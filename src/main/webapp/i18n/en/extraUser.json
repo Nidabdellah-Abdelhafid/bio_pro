@@ -19,6 +19,7 @@
       },
       "id": "ID",
       "cin": "Cin",
+      "photo": "Photo",
       "numeroTelephone": "Numero Telephone",
       "dateNaissance": "Date Naissance",
       "nationalite": "Nationalite",

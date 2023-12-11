@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Row, Col, FormText } from 'reactstrap';
-import { isNumber, Translate, translate, ValidatedField, ValidatedForm,isEmail } from 'react-jhipster';
+import {
+  isNumber,
+  Translate,
+  translate,
+  ValidatedField,
+  ValidatedForm,
+  isEmail,
+  ValidatedBlobField
+} from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { locales, languages } from 'app/config/translation';
 
@@ -39,7 +47,18 @@ export const PatientUpdate = () => {
   const handleClose = () => {
     navigate('/patient');
   };
+  const [fileExtension, setFileExtension] = useState(null);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const fileName = file.name;
+      const fileExtension = fileName.split('.').pop();
+      setFileExtension(fileExtension);
+    } else {
+      setFileExtension(null);
+    }
+  };
   useEffect(() => {
     if (isNew) {
       dispatch(reset());
@@ -61,6 +80,7 @@ export const PatientUpdate = () => {
     }
   }, [updateSuccess]);
   const saveEntity = async values => {
+
     if (isNew) {
       const userEntity = {
         login: values.login,
@@ -69,12 +89,14 @@ export const PatientUpdate = () => {
         email: values.email,
         activated: values.activated,
         langKey: values.langKey,
-        authorities: ['ROLE_USER'],
+        authorities: values.authorities,
       };
       const savedEntityUser = await dispatch(createUser(userEntity));
       const newUser = savedEntityUser.payload["data"];
       const extraUserEntity = {
         cin: values.cin,
+        photo: values.photo,
+        photoContentType:"image/"+fileExtension,
         numeroTelephone: values.numeroTelephone,
         dateNaissance: values.dateNaissance,
         nationalite: values.nationalite,
@@ -89,23 +111,23 @@ export const PatientUpdate = () => {
         ...values,
         extraUserId: newExtraUser,
       };
-      const currentDate = new Date(); // Obtenir la date système actuelle
-      const formattedDateDebut = currentDate.toISOString().split('T')[0]; // Format : 'AAAA-MM-JJ'
-      const formattedDateFin = '0001-01-01'; // Date de fin avec des zéros
+      const currentDate = new Date();
+      const formattedDateDebut = currentDate.toISOString().split('T')[0];
+      const formattedDateFin = '0001-01-01';
       console.log("patient",entityPatient)
       const savedEntityPatient = await dispatch(createEntityPatient(entityPatient));
       const newEntityPatient = savedEntityPatient.payload["data"];
       for (const c of medecinList) {
-         if(c.id === parseInt(values.medecins,10)){
-         const medecinPatientEntity = {
-          dateDebut: formattedDateDebut,
-          dateFin: formattedDateFin,
-          medecins: c,
-          patients: newEntityPatient,
+        if(c.id === parseInt(values.medecins,10)){
+          const medecinPatientEntity = {
+            dateDebut: formattedDateDebut,
+            dateFin: formattedDateFin,
+            medecins: c,
+            patients: newEntityPatient,
           };
-        dispatch(createEntityMedecinPatient(medecinPatientEntity));
+          dispatch(createEntityMedecinPatient(medecinPatientEntity));
+        }
       }
-    }
     }
     else{
       const matchingUserExtra = userextra.find((user) => user.id === patientEntity?.extraUserId?.id);
@@ -117,13 +139,16 @@ export const PatientUpdate = () => {
         email: values.email,
         activated: values.activated,
         langKey: values.langKey,
-        authorities: ['ROLE_USER'],
+        authorities: ['Role_USER'],
       };
+
       const savedEntityUser = await dispatch(updateUser(userEntity));
       const newUser = savedEntityUser.payload["data"];
       const extraUserEntity = {
         id: patientEntity?.extraUserId?.id,
         cin: values.cin,
+        photo: values.photo,
+        photoContentType:"image/"+fileExtension,
         numeroTelephone: values.numeroTelephone,
         dateNaissance: values.dateNaissance,
         nationalite: values.nationalite,
@@ -139,16 +164,16 @@ export const PatientUpdate = () => {
         ...values,
         extraUserId: newExtraUser,
       };
-      const currentDate = new Date(); // Obtenir la date système actuelle
-      const formattedDateDebut = currentDate.toISOString().split('T')[0]; // Format : 'AAAA-MM-JJ'
-      const formattedDateFin = '0001-01-01'; // Date de fin avec des zéros
+      const currentDate = new Date();
+      const formattedDateDebut = currentDate.toISOString().split('T')[0];
+      const formattedDateFin = '0001-01-01';
       const savedEntityPatient = await dispatch(updateEntity(entityPatient));
       const newEntityPatient = savedEntityPatient.payload["data"];
 
       for (const c of medecinList) {
-         if(c.id === parseInt(values.medecins,10)){
+        if(c.id === parseInt(values.medecins,10)){
           const extraUserId = patientEntity?.id;
-          const medecinPatientAssociationId = medecinPatientEnttity.find((item) => item.patients.id === extraUserId);
+          const medecinPatientAssociationId = medecinPatientEnttity.find((item) => item.patients.id === extraUserId && item.dateFin==='0001-01-01');
           const medecinPatientEntity = {
             dateDebut: formattedDateDebut,
             dateFin: formattedDateFin,
@@ -157,30 +182,30 @@ export const PatientUpdate = () => {
           };
           if (medecinPatientAssociationId) {
 
-           // Récupérez la date de début existante
-          const dateDebutExistante = medecinPatientAssociationId.dateDebut;
-          const patientsExistante = medecinPatientAssociationId.patients;
-          const medecinsExistante = medecinPatientAssociationId.medecins;
+            // Récupérez la date de début existante
+            const dateDebutExistante = medecinPatientAssociationId.dateDebut;
+            const patientsExistante = medecinPatientAssociationId.patients;
+            const medecinsExistante = medecinPatientAssociationId.medecins;
 
-          // Mise à jour de la date de début et de la date de fin dans l'entité existante
-          const updatedMedecinPatientEntity = {
-            id: medecinPatientAssociationId.id,
-            dateDebut: dateDebutExistante, // Conservez la date de début existante
-            dateFin: formattedDateDebut, // Mettez à jour la date de fin
-            medecins:medecinsExistante,
-            patients:patientsExistante,
-      };
+            // Mise à jour de la date de début et de la date de fin dans l'entité existante
+            const updatedMedecinPatientEntity = {
+              id: medecinPatientAssociationId.id,
+              dateDebut: dateDebutExistante, // Conservez la date de début existante
+              dateFin: formattedDateDebut, // Mettez à jour la date de fin
+              medecins:medecinsExistante,
+              patients:patientsExistante,
+            };
             dispatch(updateEntityMedecinPatient(updatedMedecinPatientEntity));
             dispatch(createEntityMedecinPatient(medecinPatientEntity));
 
           }
           else {
-          // L'association Medecin-Patient n'existe pas, créez une nouvelle association
-          dispatch(createEntityMedecinPatient(medecinPatientEntity));
+            // L'association Medecin-Patient n'existe pas, créez une nouvelle association
+            dispatch(createEntityMedecinPatient(medecinPatientEntity));
+          }
         }
-      }
 
-    }
+      }
     }
   };
 
@@ -192,14 +217,18 @@ export const PatientUpdate = () => {
       const loginValue = matchingUserExtra ? matchingUserExtra.user.login : '';
       const firstnamee = matchingUserExtra ? matchingUserExtra.user.firstName : '';
       const lastnamee = matchingUserExtra ? matchingUserExtra.user.lastName : '';
+      const photo = matchingUserExtra ? matchingUserExtra.photo : '';
+      const photoContentType = matchingUserExtra ? matchingUserExtra.photoContentType : '';
+
       const email = matchingUserExtra ? matchingUserExtra.user.email : '';
       const langKeyy = matchingUserExtra ? matchingUserExtra.user.langKey : '';
-      const authoritiess = matchingUserExtra ? matchingUserExtra.user.authorities : '';
-
+      const authoritiess = matchingUserExtra ? matchingUserExtra.user.authorities : ['Role_USER']; // Définit le rôle par défaut à "Role_USER"
       return {
         ...patientEntity,
         extraUserId: matchingUserExtra || null,
         cin: patientEntity?.extraUserId?.cin || '',
+        photo: photo,
+        photoContentType:photoContentType,
         numeroTelephone: patientEntity?.extraUserId?.numeroTelephone || '',
         dateNaissance: patientEntity?.extraUserId?.dateNaissance || '',
         nationalite: patientEntity?.extraUserId?.nationalite || '',
@@ -239,7 +268,7 @@ export const PatientUpdate = () => {
                   validate={{ required: true }}
                 />
               ) : null}
-               <ValidatedField
+              <ValidatedField
                 type="text"
                 name="login"
                 label={translate('userManagement.login')}
@@ -285,6 +314,15 @@ export const PatientUpdate = () => {
                 }}
               />
               <FormText>This field cannot be longer than 50 characters.</FormText>
+              <ValidatedBlobField
+                label={translate('appBiomedicaleApp.extraUser.photo')}
+                id="extra-user-photo"
+                name="photo"
+                data-cy="photo"
+                isImage
+                accept="image/*"
+                onChange={handleFileChange}
+              />
               <ValidatedField
                 name="email"
                 label={translate('global.form.email.label')}
@@ -347,8 +385,36 @@ export const PatientUpdate = () => {
                 id="extra-user-nationalite"
                 name="nationalite"
                 data-cy="nationalite"
-                type="text"
-              />
+                type="select" // Changer le type en "select"
+              >
+                <option value="" key="0">
+                  Sélectionner une nationalité
+                </option>
+                <option value="USA" key="1">
+                  Américain(e)
+                </option>
+                <option value="Morocco" key="2">
+                  Marocain(e)
+                </option>
+                <option value="China" key="3">
+                  Chinois(e)
+                </option>
+                <option value="India" key="4">
+                  Indien(ne)
+                </option>
+                <option value="Brazil" key="5">
+                  Brésilien(ne)
+                </option>
+                <option value="Russia" key="6">
+                  Russe
+                </option>
+                <option value="France" key="7">
+                  Français(e)
+                </option>
+                <option value="Germany" key="8">
+                  Allemand(e)
+                </option>
+              </ValidatedField>
               <ValidatedField
                 label={translate('appBiomedicaleApp.extraUser.adresse')}
                 id="extra-user-adresse"
@@ -357,17 +423,22 @@ export const PatientUpdate = () => {
                 type="text"
               />
               <ValidatedField
-             label={translate('appBiomedicaleApp.extraUser.genre')}
-             id="extra-user-genre"
-             name="genre"
-             data-cy="genre"
-             type="select"
-
-            >
-            <option value="" key="0" />
-            <option value="femme" key="1" >Femme</option>
-            <option value="homme" key="2" >Homme</option>
-            </ValidatedField>
+                label={translate('appBiomedicaleApp.extraUser.genre')}
+                id="extra-user-genre"
+                name="genre"
+                data-cy="genre"
+                type="select" // Changer le type en "select"
+              >
+                <option value="" key="0">
+                  Sélectionner un genre
+                </option>
+                <option value="male" key="1">
+                  Homme
+                </option>
+                <option value="female" key="2">
+                  Femme
+                </option>
+              </ValidatedField>
               <ValidatedField
                 label={translate('appBiomedicaleApp.patient.profession')}
                 id="patient-profession"
@@ -385,10 +456,10 @@ export const PatientUpdate = () => {
                 <option value="" key="0" />
                 {medecinList
                   ? medecinList.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
-                      </option>
-                    ))
+                    <option value={otherEntity.id} key={otherEntity.id}>
+                      Dr.{userextra.find(userExtra => userExtra.id === otherEntity.extraUserId.id)!.user!.lastName } {userextra.find(userExtra => userExtra.id === otherEntity.extraUserId.id)!.user!.firstName}
+                    </option>
+                  ))
                   : null}
               </ValidatedField>
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/patient" replace color="info">

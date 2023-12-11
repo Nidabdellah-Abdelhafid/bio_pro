@@ -21,7 +21,6 @@ export interface IHeaderProps {
 
 const Header = (props: IHeaderProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
-
   const dispatch = useAppDispatch();
 
   const handleLocaleChange = event => {
@@ -32,9 +31,9 @@ const Header = (props: IHeaderProps) => {
 
   const renderDevRibbon = () =>
     props.isInProduction === false ? (
-      <div className="ribbon dev">
+      <div>
         <a href="">
-          <Translate contentKey={`global.ribbon.${props.ribbonEnv}`} />
+
         </a>
       </div>
     ) : null;

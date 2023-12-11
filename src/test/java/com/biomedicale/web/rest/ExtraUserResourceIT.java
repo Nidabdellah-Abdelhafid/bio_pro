@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 
 /**
  * Integration tests for the {@link ExtraUserResource} REST controller.
@@ -33,6 +34,10 @@ class ExtraUserResourceIT {
 
     private static final String DEFAULT_CIN = "AAAAAAAAAA";
     private static final String UPDATED_CIN = "BBBBBBBBBB";
+    private static final byte[] DEFAULT_PHOTO = TestUtil.createByteArray(1, "0");
+    private static final byte[] UPDATED_PHOTO = TestUtil.createByteArray(1, "1");
+    private static final String DEFAULT_PHOTO_CONTENT_TYPE = "image/jpg";
+    private static final String UPDATED_PHOTO_CONTENT_TYPE = "image/png";
 
     private static final Double DEFAULT_NUMERO_TELEPHONE = 1D;
     private static final Double UPDATED_NUMERO_TELEPHONE = 2D;
@@ -75,6 +80,8 @@ class ExtraUserResourceIT {
     public static ExtraUser createEntity(EntityManager em) {
         ExtraUser extraUser = new ExtraUser()
             .cin(DEFAULT_CIN)
+            .photo(DEFAULT_PHOTO)
+            .photoContentType(DEFAULT_PHOTO_CONTENT_TYPE)
             .numeroTelephone(DEFAULT_NUMERO_TELEPHONE)
             .dateNaissance(DEFAULT_DATE_NAISSANCE)
             .nationalite(DEFAULT_NATIONALITE)
@@ -92,6 +99,8 @@ class ExtraUserResourceIT {
     public static ExtraUser createUpdatedEntity(EntityManager em) {
         ExtraUser extraUser = new ExtraUser()
             .cin(UPDATED_CIN)
+            .photo(UPDATED_PHOTO)
+            .photoContentType(UPDATED_PHOTO_CONTENT_TYPE)
             .numeroTelephone(UPDATED_NUMERO_TELEPHONE)
             .dateNaissance(UPDATED_DATE_NAISSANCE)
             .nationalite(UPDATED_NATIONALITE)
@@ -119,6 +128,8 @@ class ExtraUserResourceIT {
         assertThat(extraUserList).hasSize(databaseSizeBeforeCreate + 1);
         ExtraUser testExtraUser = extraUserList.get(extraUserList.size() - 1);
         assertThat(testExtraUser.getCin()).isEqualTo(DEFAULT_CIN);
+        assertThat(testExtraUser.getPhoto()).isEqualTo(DEFAULT_PHOTO);
+        assertThat(testExtraUser.getPhotoContentType()).isEqualTo(DEFAULT_PHOTO_CONTENT_TYPE);
         assertThat(testExtraUser.getNumeroTelephone()).isEqualTo(DEFAULT_NUMERO_TELEPHONE);
         assertThat(testExtraUser.getDateNaissance()).isEqualTo(DEFAULT_DATE_NAISSANCE);
         assertThat(testExtraUser.getNationalite()).isEqualTo(DEFAULT_NATIONALITE);
@@ -157,6 +168,8 @@ class ExtraUserResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(extraUser.getId().intValue())))
             .andExpect(jsonPath("$.[*].cin").value(hasItem(DEFAULT_CIN)))
+            .andExpect(jsonPath("$.[*].photoContentType").value(hasItem(DEFAULT_PHOTO_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].photo").value(hasItem(Base64Utils.encodeToString(DEFAULT_PHOTO))))
             .andExpect(jsonPath("$.[*].numeroTelephone").value(hasItem(DEFAULT_NUMERO_TELEPHONE.doubleValue())))
             .andExpect(jsonPath("$.[*].dateNaissance").value(hasItem(DEFAULT_DATE_NAISSANCE.toString())))
             .andExpect(jsonPath("$.[*].nationalite").value(hasItem(DEFAULT_NATIONALITE)))
@@ -177,6 +190,8 @@ class ExtraUserResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(extraUser.getId().intValue()))
             .andExpect(jsonPath("$.cin").value(DEFAULT_CIN))
+            .andExpect(jsonPath("$.photoContentType").value(DEFAULT_PHOTO_CONTENT_TYPE))
+            .andExpect(jsonPath("$.photo").value(Base64Utils.encodeToString(DEFAULT_PHOTO)))
             .andExpect(jsonPath("$.numeroTelephone").value(DEFAULT_NUMERO_TELEPHONE.doubleValue()))
             .andExpect(jsonPath("$.dateNaissance").value(DEFAULT_DATE_NAISSANCE.toString()))
             .andExpect(jsonPath("$.nationalite").value(DEFAULT_NATIONALITE))
@@ -205,6 +220,8 @@ class ExtraUserResourceIT {
         em.detach(updatedExtraUser);
         updatedExtraUser
             .cin(UPDATED_CIN)
+            .photo(UPDATED_PHOTO)
+            .photoContentType(UPDATED_PHOTO_CONTENT_TYPE)
             .numeroTelephone(UPDATED_NUMERO_TELEPHONE)
             .dateNaissance(UPDATED_DATE_NAISSANCE)
             .nationalite(UPDATED_NATIONALITE)
@@ -224,6 +241,8 @@ class ExtraUserResourceIT {
         assertThat(extraUserList).hasSize(databaseSizeBeforeUpdate);
         ExtraUser testExtraUser = extraUserList.get(extraUserList.size() - 1);
         assertThat(testExtraUser.getCin()).isEqualTo(UPDATED_CIN);
+        assertThat(testExtraUser.getPhoto()).isEqualTo(UPDATED_PHOTO);
+        assertThat(testExtraUser.getPhotoContentType()).isEqualTo(UPDATED_PHOTO_CONTENT_TYPE);
         assertThat(testExtraUser.getNumeroTelephone()).isEqualTo(UPDATED_NUMERO_TELEPHONE);
         assertThat(testExtraUser.getDateNaissance()).isEqualTo(UPDATED_DATE_NAISSANCE);
         assertThat(testExtraUser.getNationalite()).isEqualTo(UPDATED_NATIONALITE);
@@ -314,6 +333,8 @@ class ExtraUserResourceIT {
         assertThat(extraUserList).hasSize(databaseSizeBeforeUpdate);
         ExtraUser testExtraUser = extraUserList.get(extraUserList.size() - 1);
         assertThat(testExtraUser.getCin()).isEqualTo(UPDATED_CIN);
+        assertThat(testExtraUser.getPhoto()).isEqualTo(DEFAULT_PHOTO);
+        assertThat(testExtraUser.getPhotoContentType()).isEqualTo(DEFAULT_PHOTO_CONTENT_TYPE);
         assertThat(testExtraUser.getNumeroTelephone()).isEqualTo(DEFAULT_NUMERO_TELEPHONE);
         assertThat(testExtraUser.getDateNaissance()).isEqualTo(DEFAULT_DATE_NAISSANCE);
         assertThat(testExtraUser.getNationalite()).isEqualTo(UPDATED_NATIONALITE);
@@ -335,6 +356,8 @@ class ExtraUserResourceIT {
 
         partialUpdatedExtraUser
             .cin(UPDATED_CIN)
+            .photo(UPDATED_PHOTO)
+            .photoContentType(UPDATED_PHOTO_CONTENT_TYPE)
             .numeroTelephone(UPDATED_NUMERO_TELEPHONE)
             .dateNaissance(UPDATED_DATE_NAISSANCE)
             .nationalite(UPDATED_NATIONALITE)
@@ -354,6 +377,8 @@ class ExtraUserResourceIT {
         assertThat(extraUserList).hasSize(databaseSizeBeforeUpdate);
         ExtraUser testExtraUser = extraUserList.get(extraUserList.size() - 1);
         assertThat(testExtraUser.getCin()).isEqualTo(UPDATED_CIN);
+        assertThat(testExtraUser.getPhoto()).isEqualTo(UPDATED_PHOTO);
+        assertThat(testExtraUser.getPhotoContentType()).isEqualTo(UPDATED_PHOTO_CONTENT_TYPE);
         assertThat(testExtraUser.getNumeroTelephone()).isEqualTo(UPDATED_NUMERO_TELEPHONE);
         assertThat(testExtraUser.getDateNaissance()).isEqualTo(UPDATED_DATE_NAISSANCE);
         assertThat(testExtraUser.getNationalite()).isEqualTo(UPDATED_NATIONALITE);

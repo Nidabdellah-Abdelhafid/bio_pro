@@ -126,6 +126,12 @@ public class ExtraUserResource {
                 if (extraUser.getCin() != null) {
                     existingExtraUser.setCin(extraUser.getCin());
                 }
+                if (extraUser.getPhoto() != null) {
+                    existingExtraUser.setPhoto(extraUser.getPhoto());
+                }
+                if (extraUser.getPhotoContentType() != null) {
+                    existingExtraUser.setPhotoContentType(extraUser.getPhotoContentType());
+                }
                 if (extraUser.getNumeroTelephone() != null) {
                     existingExtraUser.setNumeroTelephone(extraUser.getNumeroTelephone());
                 }

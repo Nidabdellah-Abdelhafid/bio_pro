@@ -17,6 +17,12 @@
             <column name="cin" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="photo" type="longblob">
+                <constraints nullable="true" />
+            </column>
+            <column name="photo_content_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="numero_telephone" type="double">
                 <constraints nullable="true" />
             </column>
@@ -57,6 +63,8 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="cin" type="string"/>
+            <column name="photo" type="blob"/>
+            <column name="photo_content_type" type="string"/>
             <column name="numero_telephone" type="numeric"/>
             <column name="date_naissance" type="date"/>
             <column name="nationalite" type="string"/>

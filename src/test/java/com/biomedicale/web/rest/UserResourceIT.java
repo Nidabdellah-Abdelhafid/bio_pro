@@ -38,12 +38,9 @@ class UserResourceIT {
 
     private static final String DEFAULT_LOGIN = "johndoe";
     private static final String UPDATED_LOGIN = "jhipster";
-
     private static final Long DEFAULT_ID = 1L;
-
     private static final String DEFAULT_PASSWORD = "passjohndoe";
     private static final String UPDATED_PASSWORD = "passjhipster";
-
     private static final String DEFAULT_EMAIL = "johndoe@localhost";
     private static final String UPDATED_EMAIL = "jhipster@localhost";
 

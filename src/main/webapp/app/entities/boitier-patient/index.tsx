@@ -11,10 +11,10 @@ import BoitierPatientDeleteDialog from './boitier-patient-delete-dialog';
 const BoitierPatientRoutes = () => (
   <ErrorBoundaryRoutes>
     <Route index element={<BoitierPatient />} />
-    <Route path="new" element={<BoitierPatientUpdate />} />
+    <Route path="new" element={<BoitierPatientUpdate selectedPatient={undefined} />} />
     <Route path=":id">
       <Route index element={<BoitierPatientDetail />} />
-      <Route path="edit" element={<BoitierPatientUpdate />} />
+      <Route path="edit" element={<BoitierPatientUpdate selectedPatient={undefined} />} />
       <Route path="delete" element={<BoitierPatientDeleteDialog />} />
     </Route>
   </ErrorBoundaryRoutes>

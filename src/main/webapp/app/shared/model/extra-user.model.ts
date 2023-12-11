@@ -4,6 +4,8 @@ import { IUser } from 'app/shared/model/user.model';
 export interface IExtraUser {
   id?: number;
   cin?: string | null;
+  photoContentType?: string | null;
+  photo?: string | null;
   numeroTelephone?: number | null;
   dateNaissance?: string | null;
   nationalite?: string | null;

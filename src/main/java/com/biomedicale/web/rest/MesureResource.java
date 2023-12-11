@@ -54,7 +54,6 @@ public class MesureResource {
         Mesure result = mesureRepository.save(mesure);
         return ResponseEntity
             .created(new URI("/api/mesures/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

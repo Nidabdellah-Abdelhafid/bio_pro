@@ -13,7 +13,6 @@ import ExtraUser from './extra-user';
 import MedecinPatient from './medecin-patient';
 import BoitierPatient from './boitier-patient';
 import BoitierCapteur from './boitier-capteur';
-import { AUTHORITIES } from 'app/config/constants';
 import PrivateRoute from 'app/shared/auth/private-route';
 
 /* jhipster-needle-add-route-import - JHipster will add routes here */
