@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import DataTable, { createTheme, Theme } from 'react-data-table-component';
 import { faSort } from '@fortawesome/free-solid-svg-icons';
 
+import TemperatureChart from './TemperatureChart';
 import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, Col,Row } from 'reactstrap'; // Importez le composant Modal
 import { Translate, TextFormat, ValidatedField, ValidatedForm, translate } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,8 +28,10 @@ import { IExtraUser } from 'app/shared/model/extra-user.model';
 import WebSocketClient from './WebSocketClient'
 import { getEntities as getBoitiersCapteurs } from 'app/entities/boitier-capteur/boitier-capteur.reducer';
 import { ICapteur } from "app/shared/model/capteur.model";
-
+import Papa from 'papaparse';
 import { IUser } from 'app/shared/model/user.model';
+import axios from "axios";
+import {getEntities as getEntitiesMesure} from '../mesure/mesure.reducer';
 const CodeModal = ({  patient, nombrecapteur, capteurs, isOpen, toggle }) => {
   // Include your code or component for displaying data here
   return (
@@ -65,6 +68,7 @@ export const BoitierPatient = () => {
   const [listePatients, setListePatients] = useState<IMedecinPatient[]>([]);
   const [listePatientsBoitiers, setListePatientsBoitiers] = useState<IBoitierPatient[]>([]);
   const [modal, setModal] = useState(false);
+  const [modala, setModala] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState({});
   const [selectedBoitier, setSelectedBoitier] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,7 +82,8 @@ export const BoitierPatient = () => {
   const [patient,setPatient] = useState({});
   const [nombreCapteur,setNombreCapteur] = useState(0);
   const [capteurs,setCapteurs] = useState<IBoitierCapteur[]>([]);
-
+  const mesureList = useAppSelector(state => state.mesure.entities);
+  const loadingq = useAppSelector(state => state.mesure.loading);
 // Add a new state for the search term
   const [searchTerm, setSearchTerm] = useState('');
   const customStyles = {
@@ -176,15 +181,21 @@ export const BoitierPatient = () => {
     dispatch(getEntitiesExtraUser({}))
     dispatch(getPatients({}))
     RecupererListPatient();
+    dispatch(getEntitiesMesure({}));
 
   }, []);
 
   const handleSyncList = () => {
     console.log('fat');
+    dispatch(getEntitiesMesure({}));
   };
 
   const handleClose = () => {
     setModal(!modal);
+    window.location.reload();
+  };
+  const handleClosea = () => {
+    setModala(!modala);
     window.location.reload();
   };
 
@@ -241,6 +252,10 @@ export const BoitierPatient = () => {
     setSelectedPatient(patient);
     setModal(!modal);
   };
+  const toggleActivea = (patient) => () => {
+    downloadCSV(patient);
+    setModala(!modala);
+  };
 
   const RecupererListPatient = async () => {
     const boitierpatient = await dispatch(getEntitiesBoitiersPatients({}));
@@ -258,7 +273,101 @@ export const BoitierPatient = () => {
     }
 
   };
+  const [startDate, setStartDate] = useState('');
+  const [jsonDataList, setJsonDataList] = useState([]);
+  const [jsonDataListResult, setJsonDataListResult] = useState([]);
+  const [prediction, setPrediction] = useState(null);
 
+  const downloadCSV = (patient) => {
+    // Filter data by patient_id and type
+    const filteredData = mesureList
+      .filter(entry => entry.patient.id === patient.id && entry.type === "Temperature")
+      .map(({ date, valeur }) => ({ date, temperature: valeur }));
+    console.log(filteredData)
+    setJsonDataList(filteredData);
+
+    // Convert filtered data to CSV format
+
+  };
+
+
+
+  const handleDateChange = (e) => {
+    setStartDate(e.target.value);
+  };
+
+
+
+  const trainAndPredictARIMA = async () => {
+
+    try {
+      const lastDate = jsonDataList[jsonDataList.length - 1].date;
+
+      const threeDaysLater = new Date(lastDate);
+      threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+      const dateFuture=threeDaysLater.toISOString().split('T')[0];
+      console.log('Last date + 3 days:', dateFuture);
+      // Prepare the data to be sent as JSON
+      const formData = new FormData();
+      formData.append('startDate', dateFuture);
+      formData.append('jsonDataList', JSON.stringify(jsonDataList));
+
+
+      await axios.post('/api/arima/train-and-predict-rabbitmq', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Poll the result endpoint until the result is available
+      const pollResult = async () => {
+        const response = await axios.get('/api/arima/result');
+        if (response.status === 200) {
+          // Extract relevant data from the response
+          const prediction = response.data && response.data.prediction;
+
+          if (prediction !== undefined) {
+            setPrediction(prediction);
+            const formattedPrediction = prediction.map(entry => {
+              const originalDate = new Date(entry.date);
+              const formattedDate = originalDate.toISOString().split('T')[0];
+              return { date: formattedDate, temperature: entry.temperature , color: "red"};
+            });
+            setJsonDataListResult(formattedPrediction);
+            console.log(formattedPrediction);
+          } else {
+            // Retry after a delay if the result is not available yet
+            setTimeout(pollResult, 1000);
+          }
+        }
+      };
+
+      // Start polling for the result
+      pollResult();
+    } catch (error) {
+      console.error('Error: ', error.response ? error.response.data : error.message);
+    }
+
+  };
+
+  const newData = [
+    ...jsonDataList,
+    ...jsonDataListResult
+  ];
+  const handleButtonClick = () => {
+    // Execute the function after a 500ms delay
+    setTimeout(() => {
+      trainAndPredictARIMA();
+
+      // Execute the function again after another 500ms delay
+      setTimeout(() => {
+        trainAndPredictARIMA();
+      }, 500);
+    }, 500);
+  };
+
+
+  // @ts-ignore
   return (
     <div>
       <Modal isOpen={modal} toggle={toggleActive} size="lg" >
@@ -268,6 +377,33 @@ export const BoitierPatient = () => {
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={handleClose}>
+            Annuler
+          </Button>
+        </ModalFooter>
+      </Modal>
+      <Modal isOpen={modala} toggle={toggleActivea} size="lg" >
+        <ModalHeader >Prediction </ModalHeader>
+        <ModalBody>
+          <div className="container mt-3">
+
+            <div className="alert alert-info">Futur data</div>
+
+            {(jsonDataListResult) ? (<TemperatureChart data={newData} />) : (<p>no data</p>)
+
+            }
+
+            <br/>
+
+
+
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button className="btn btn-info" onClick={handleButtonClick}>
+            Train and Predict
+
+          </button>
+          <Button color="secondary" onClick={handleClosea}>
             Annuler
           </Button>
         </ModalFooter>
@@ -332,6 +468,16 @@ export const BoitierPatient = () => {
                   </Button>
                 ),
               },
+              {
+                name: 'Preduction',
+                cell: (row) => (
+                  <Button color="primary" onClick={toggleActivea(row.patients)}>
+                    Preduction
+
+                  </Button>
+                ),
+              },
+
             ]}
             data={filteredPatients}
             pagination

@@ -47,61 +47,61 @@ export const Mesure = () => {
         {mesureList && mesureList.length > 0 ? (
           <Table responsive>
             <thead>
-              <tr>
-                <th>
-                  <Translate contentKey="appBiomedicaleApp.mesure.id">ID</Translate>
-                </th>
-                <th>
-                  <Translate contentKey="appBiomedicaleApp.mesure.type">Type</Translate>
-                </th>
-                <th>
-                  <Translate contentKey="appBiomedicaleApp.mesure.valeur">Valeur</Translate>
-                </th>
-                <th>
-                  <Translate contentKey="appBiomedicaleApp.mesure.date">Date</Translate>
-                </th>
-                <th>
-                  <Translate contentKey="appBiomedicaleApp.mesure.patient">Patient</Translate>
-                </th>
-                <th />
-              </tr>
+            <tr>
+              <th>
+                <Translate contentKey="appBiomedicaleApp.mesure.id">ID</Translate>
+              </th>
+              <th>
+                <Translate contentKey="appBiomedicaleApp.mesure.type">Type</Translate>
+              </th>
+              <th>
+                <Translate contentKey="appBiomedicaleApp.mesure.valeur">Valeur</Translate>
+              </th>
+              <th>
+                <Translate contentKey="appBiomedicaleApp.mesure.date">Date</Translate>
+              </th>
+              <th>
+                <Translate contentKey="appBiomedicaleApp.mesure.patient">Patient</Translate>
+              </th>
+              <th />
+            </tr>
             </thead>
             <tbody>
-              {mesureList.map((mesure, i) => (
-                <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/mesure/${mesure.id}`} color="link" size="sm">
-                      {mesure.id}
-                    </Button>
-                  </td>
-                  <td>{mesure.type}</td>
-                  <td>{mesure.valeur}</td>
-                  <td>{mesure.date ? <TextFormat type="date" value={mesure.date} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
-                  <td>{mesure.patient ? <Link to={`/patient/${mesure.patient.id}`}>{mesure.patient.id}</Link> : ''}</td>
-                  <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`/mesure/${mesure.id}`} color="info" size="sm" data-cy="entityDetailsButton">
-                        <FontAwesomeIcon icon="eye" />{' '}
-                        <span className="d-none d-md-inline">
+            {mesureList.map((mesure, i) => (
+              <tr key={`entity-${i}`} data-cy="entityTable">
+                <td>
+                  <Button tag={Link} to={`/mesure/${mesure.id}`} color="link" size="sm">
+                    {mesure.id}
+                  </Button>
+                </td>
+                <td>{mesure.type}</td>
+                <td>{mesure.valeur}</td>
+                <td>{mesure.date ? <TextFormat type="date" value={mesure.date} format={APP_LOCAL_DATE_FORMAT} /> : null}</td>
+                <td>{mesure.patient ? <Link to={`/patient/${mesure.patient.id}`}>{mesure.patient.id}</Link> : ''}</td>
+                <td className="text-end">
+                  <div className="btn-group flex-btn-group-container">
+                    <Button tag={Link} to={`/mesure/${mesure.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                      <FontAwesomeIcon icon="eye" />{' '}
+                      <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
-                      </Button>
-                      <Button tag={Link} to={`/mesure/${mesure.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
+                    </Button>
+                    <Button tag={Link} to={`/mesure/${mesure.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
+                      <FontAwesomeIcon icon="pencil-alt" />{' '}
+                      <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.edit">Edit</Translate>
                         </span>
-                      </Button>
-                      <Button tag={Link} to={`/mesure/${mesure.id}/delete`} color="danger" size="sm" data-cy="entityDeleteButton">
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
+                    </Button>
+                    <Button tag={Link} to={`/mesure/${mesure.id}/delete`} color="danger" size="sm" data-cy="entityDeleteButton">
+                      <FontAwesomeIcon icon="trash" />{' '}
+                      <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.delete">Delete</Translate>
                         </span>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
             </tbody>
           </Table>
         ) : (

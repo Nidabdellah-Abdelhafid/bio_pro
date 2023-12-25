@@ -26,7 +26,7 @@
     <properties>
         <!-- Build properties -->
         <maven.version>3.2.5</maven.version>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <node.version>v16.17.0</node.version>
         <npm.version>8.19.1</npm.version>
 
@@ -84,7 +84,7 @@
         <modernizer-maven-plugin.version>2.4.0</modernizer-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <jib-maven-plugin.version>3.2.1</jib-maven-plugin.version>
-        <jib-maven-plugin.image>eclipse-temurin:11-jre-focal</jib-maven-plugin.image>
+        <jib-maven-plugin.image>eclipse-temurin:17-jre-focal</jib-maven-plugin.image>
         <jib-maven-plugin.architecture>amd64</jib-maven-plugin.architecture>
         <lifecycle-mapping.version>1.0.0</lifecycle-mapping.version>
         <properties-maven-plugin.version>1.1.0</properties-maven-plugin.version>
@@ -306,6 +306,21 @@
             <version>6.0.2</version>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Add this to your dependencies section -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -394,7 +409,7 @@
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
                         <includes>pom.xml,README.md</includes>
-                        <excludes>.git/**/*,target/**/*,node_modules/**/*,node/**/*</excludes>
+                        <excludes>.git/*/,target/*/,node_modules/*/,node/*/</excludes>
                         <sourceDirectories>./</sourceDirectories>
                     </configuration>
                     <executions>
@@ -460,7 +475,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <warSourceIncludes>WEB-INF/**,META-INF/**</warSourceIncludes>
+                        <warSourceIncludes>WEB-INF/*,META-INF/*</warSourceIncludes>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                         <warSourceDirectory>target/classes/static/</warSourceDirectory>
                         <webResources>
@@ -535,7 +550,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                      <javaVersion>${java.version}</javaVersion>
+                        <javaVersion>${java.version}</javaVersion>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -588,7 +603,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>app_biomedicale:latest</image>
+                            <image>hafidnid/app_biomedicale_db_finale:latest</image>
                         </to>
                         <container>
                             <entrypoint>
@@ -724,8 +739,8 @@
                         <!-- Force alphabetical order to have a reproducible build -->
                         <runOrder>alphabetical</runOrder>
                         <excludes>
-                            <exclude>**/*IT*</exclude>
-                            <exclude>**/*IntTest*</exclude>
+                            <exclude>*/*IT</exclude>
+                            <exclude>*/*IntTest</exclude>
                         </excludes>
                     </configuration>
                 </plugin>
@@ -733,7 +748,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin.version}</version>
-               </plugin>
+                </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
@@ -818,17 +833,17 @@
                                 <fileSet>
                                     <directory>${project.basedir}</directory>
                                     <includes>
-                                        <include>src/main/webapp/**/*.*</include>
-                                        <include>target/classes/static/**/*.*</include>
+                                        <include>src/main/webapp/*/.*</include>
+                                        <include>target/classes/static/*/.*</include>
                                         <include>package-lock.json</include>
                                         <include>package.json</include>
-                                        <include>webpack/*.*</include>
+                                        <include>webpack/.</include>
                                         <include>tsconfig.json</include>
                                         <include>.postcss.config.js</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>**/app/**/service-worker.js</exclude>
-                                        <exclude>**/app/**/vendor.css</exclude>
+                                        <exclude>*/app/*/service-worker.js</exclude>
+                                        <exclude>*/app/*/vendor.css</exclude>
                                     </excludes>
                                 </fileSet>
                             </fileSets>
@@ -949,8 +964,8 @@
                                 <!-- Force alphabetical order to have a reproducible build -->
                                 <runOrder>alphabetical</runOrder>
                                 <includes>
-                                    <include>**/*IT*</include>
-                                    <include>**/*IntTest*</include>
+                                    <include>*/*IT</include>
+                                    <include>*/*IntTest</include>
                                 </includes>
                                 <argLine>@{argLine} -Dspring.profiles.active=testdev</argLine>
                             </configuration>
@@ -1044,8 +1059,8 @@
                                 <!-- Force alphabetical order to have a reproducible build -->
                                 <runOrder>alphabetical</runOrder>
                                 <includes>
-                                    <include>**/*IT*</include>
-                                    <include>**/*IntTest*</include>
+                                    <include>*/*IT</include>
+                                    <include>*/*IntTest</include>
                                 </includes>
                                 <argLine>@{argLine} -Dspring.profiles.active=testprod</argLine>
                             </configuration>

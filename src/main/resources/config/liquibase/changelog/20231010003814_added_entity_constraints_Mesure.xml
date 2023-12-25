@@ -7,7 +7,11 @@
         Added the constraints for entity Mesure.
     -->
     <changeSet id="20231010003814-2" author="jhipster">
-
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_mesure__patient_id"/>
+            </not>
+        </preConditions>
         <addForeignKeyConstraint baseColumnNames="patient_id"
                                  baseTableName="mesure"
                                  constraintName="fk_mesure__patient_id"

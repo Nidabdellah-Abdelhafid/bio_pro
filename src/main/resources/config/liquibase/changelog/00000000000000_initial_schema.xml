@@ -12,6 +12,11 @@
         The initial schema has the '00000000000001' id, so that it is over-written if we re-generate it.
     -->
     <changeSet id="00000000000001" author="jhipster">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="jhi_user"/>
+            </not>
+        </preConditions>
         <createTable tableName="jhi_user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
@@ -101,6 +106,11 @@
     </changeSet>
 
     <changeSet author="jhipster" id="00000000000002" context="test">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="jhi_date_time_wrapper"/>
+            </not>
+        </preConditions>
         <createTable tableName="jhi_date_time_wrapper">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="jhi_date_time_wrapperPK"/>

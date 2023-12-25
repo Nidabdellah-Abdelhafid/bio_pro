@@ -7,7 +7,12 @@
         Added the constraints for entity BoitierPatient.
     -->
     <changeSet id="20231010003818-2" author="jhipster">
-
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_boitier_patient__boitiers_id"/>
+                <foreignKeyConstraintExists foreignKeyName="fk_boitier_patient__patients_id"/>
+            </not>
+        </preConditions>
         <addForeignKeyConstraint baseColumnNames="boitiers_id"
                                  baseTableName="boitier_patient"
                                  constraintName="fk_boitier_patient__boitiers_id"

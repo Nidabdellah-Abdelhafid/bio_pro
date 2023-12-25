@@ -10,6 +10,11 @@
         Added the entity ExtraUser.
     -->
     <changeSet id="20231010003816-1" author="jhipster">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="extra_user"/>
+            </not>
+        </preConditions>
         <createTable tableName="extra_user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

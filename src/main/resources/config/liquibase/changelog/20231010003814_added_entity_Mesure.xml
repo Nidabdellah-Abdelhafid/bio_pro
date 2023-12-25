@@ -10,6 +10,11 @@
         Added the entity Mesure.
     -->
     <changeSet id="20231010003814-1" author="jhipster">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mesure"/>
+            </not>
+        </preConditions>
         <createTable tableName="mesure">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
