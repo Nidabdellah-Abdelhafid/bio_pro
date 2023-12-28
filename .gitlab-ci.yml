@@ -1,31 +1,60 @@
-image: jhipster/jhipster:v7.9.3
+image: jhipster/jhipster:v6.8.0
 
+#services:
+#  - redis
+
+#connect:
+#  image: redis
+#  script:
+#    - redis-cli -h redis PING
+
+cache:
+  key: '$CI_COMMIT_REF_NAME'
+  paths:
+    - .maven/
 stages:
+  - check
   - build
-  - publish
-
-variables:
-  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
-  CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
-
+  - package
+  - release
 before_script:
   - export NG_CLI_ANALYTICS="false"
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+  - export MAVEN_USER_HOME=pwd/.maven
+  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v12.16.1 -DnpmVersion=6.14.2 -Dmaven.repo.local=$MAVEN_USER_HOME
+  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
-build:
+nohttp:
+  stage: check
+  script:
+    - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
+
+maven-compile:
   stage: build
   script:
-    - echo "In build phase"
-    - apk add --no-cache docker   # Install Docker client
-    - mvn package -Pprod verify jib:dockerBuild -DskipTests --image=$CONTAINER_TEST_IMAGE
-    - docker push $CONTAINER_TEST_IMAGE
+    - bash mvnw -ntp compile -Dmaven.repo.local=$MAVEN_USER_HOME
+  artifacts:
+    paths:
+      - target/classes/
+      - target/generated-sources/
+    expire_in: 1 day
 
-publish-image:
-  stage: publish
+maven-package:
+  stage: package
   script:
-    - echo "In publish phase"
-    - apk add --no-cache docker   # Install Docker client
-    - docker pull $CONTAINER_TEST_IMAGE
-    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker push $CONTAINER_RELEASE_IMAGE
+    - bash mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+  artifacts:
+    paths:
+      - target/*.jar
+      - target/classes
+    expire_in: 1 day
+
+# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
+docker-push:
+  stage: release
+  variables:
+    REGISTRY_URL: registry.gitlab.com
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+  dependencies:
+    - maven-package
+  script:
+    - bash mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME
