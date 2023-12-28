@@ -7,7 +7,9 @@ image: jhipster/jhipster:v7.9.3
 #  image: redis
 #  script:
 #    - redis-cli -h redis PING
-
+services:
+      - docker:dind
+      
 stages:
   - build
   - publish
