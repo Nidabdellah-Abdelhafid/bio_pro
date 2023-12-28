@@ -20,7 +20,7 @@ build:
   stage: build
   script:
     - echo "In build phase"
-    - export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))) | sed 's|/bin||g')
+    - SET "JAVA_HOME=C:\Progra~1\Java\jdk-17"
     - ./mvnw package -Pprod verify jib:dockerBuild -DskipTests --image=$CONTAINER_TEST_IMAGE
     - docker push $CONTAINER_TEST_IMAGE
 
