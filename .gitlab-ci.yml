@@ -14,11 +14,10 @@ stages:
   - release
   - deploy
 
-variables:
-  MAVEN_USER_HOME: "$CI_PROJECT_DIR/.mvnw"
-
 before_script:
+  - echo 'ALL ALL=(ALL) NOPASSWD:ALL' | sudo EDITOR='tee -a' visudo
   - chmod +x mvnw
+  - export MAVEN_USER_HOME=`pwd`/.mvnw
 
 nohttp:
   stage: check
@@ -80,16 +79,14 @@ maven-package:
       - target/classes
     expire_in: 1 day
 
-
-# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
-#docker-push:
-#    stage: release
-#    variables:
-#        REGISTRY_URL: registry.gitlab.com
-#        IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
-#    dependencies:
-#        - maven-package
-#    script:
-#        - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
-
-
+# Uncomment the following line to use gitlab's container registry. 
+# You need to adapt the REGISTRY_URL in case you are not using gitlab.com
+# docker-push:
+#   stage: release
+#   variables:
+#     REGISTRY_URL: registry.gitlab.com
+#     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+#   dependencies:
+#     - maven-package
+#   script:
+#     - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
