@@ -14,7 +14,6 @@ stages:
   - deploy
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
-  - chmod +x mvnw
 
 nohttp:
   stage: check
@@ -87,6 +86,3 @@ maven-package:
 #        - maven-package
 #    script:
 #        - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
-
-r push $CONTAINER_RELEASE_IMAGE
-r push $CONTAINER_RELEASE_IMAGE
