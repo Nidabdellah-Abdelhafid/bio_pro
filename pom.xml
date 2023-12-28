@@ -603,7 +603,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>hafidnid/app_biomedicale_db_finale:latest</image>
+                            <image>hafidnid/app_biomedicale_db_local_finale:latest</image>
                         </to>
                         <container>
                             <entrypoint>

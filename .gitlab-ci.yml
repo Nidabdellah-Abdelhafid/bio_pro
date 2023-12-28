@@ -1,0 +1,38 @@
+image: openjdk:11-jdk
+
+services:
+  - docker:latest
+
+stages:
+  - build
+  - test
+  - publish
+
+variables:
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
+
+before_script:
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+
+build:
+  stage: build
+  script:
+    - echo "In build phase"
+    - ./mvnw package -Pprod verify jib:dockerBuild -DskipTests --image=$CONTAINER_TEST_IMAGE
+    - docker push $CONTAINER_TEST_IMAGE
+
+test:
+  stage: test
+  script:
+    - echo "In test phase"
+    - docker run --rm $CONTAINER_TEST_IMAGE ./mvnw -Pprod test
+
+publish-image:
+  stage: publish
+  script:
+    - echo "In publish phase"
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE

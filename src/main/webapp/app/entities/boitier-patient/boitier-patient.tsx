@@ -400,7 +400,7 @@ export const BoitierPatient = () => {
         </ModalBody>
         <ModalFooter>
           <button className="btn btn-info" onClick={handleButtonClick}>
-            Train and Predict
+            Predict
 
           </button>
           <Button color="secondary" onClick={handleClosea}>
