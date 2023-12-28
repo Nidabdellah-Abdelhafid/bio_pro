@@ -10,6 +10,7 @@ stages:
 variables:
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
+  JAVA_HOME: "/usr/lib/jvm/java-11-openjdk-amd64"
 
 before_script:
   - chmod +x mvnw
@@ -20,7 +21,6 @@ build:
   stage: build
   script:
     - echo "In build phase"
-    - export JAVA_HOME=$(update-alternatives --list javac | grep "bin/javac" | sed 's|/bin/javac||g')
     - ./mvnw package -Pprod verify jib:dockerBuild -DskipTests --image=$CONTAINER_TEST_IMAGE
     - docker push $CONTAINER_TEST_IMAGE
 
