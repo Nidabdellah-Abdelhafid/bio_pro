@@ -10,7 +10,7 @@ stages:
 variables:
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
-  JAVA_HOME: "C:\\Progra~1\\Java\\jdk-17\\bin"
+  JAVA_HOME: "C:\\Progra~1\\Java\\jdk-17"
 
 before_script:
   - chmod +x mvnw
