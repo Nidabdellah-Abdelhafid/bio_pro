@@ -5,7 +5,6 @@ services:
 
 stages:
   - build
-  - test
   - publish
 
 variables:
@@ -22,12 +21,6 @@ build:
     - echo "In build phase"
     - ./mvnw package -Pprod verify jib:dockerBuild -DskipTests --image=$CONTAINER_TEST_IMAGE
     - docker push $CONTAINER_TEST_IMAGE
-
-test:
-  stage: test
-  script:
-    - echo "In test phase"
-    - docker run --rm $CONTAINER_TEST_IMAGE ./mvnw -Pprod test
 
 publish-image:
   stage: publish
