@@ -17,6 +17,8 @@ variables:
   CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
 
 before_script:
+  services:
+      - docker:dind
   - export NG_CLI_ANALYTICS="false"
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
