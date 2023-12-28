@@ -1,4 +1,4 @@
-image: jhipster/jhipster:v7.9.3
+image: docker:latest
 
 cache:
   key: '$CI_COMMIT_REF_NAME'
