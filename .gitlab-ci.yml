@@ -14,10 +14,11 @@ stages:
   - release
   - deploy
 
+variables:
+  MAVEN_USER_HOME: "$CI_PROJECT_DIR/.mvnw"
+
 before_script:
-  - echo 'ALL ALL=(ALL) NOPASSWD:ALL' | sudo EDITOR='tee -a' visudo
-  - sudo chmod +x mvnw
-  - export MAVEN_USER_HOME=`pwd`/.mvnw
+  - chmod +x mvnw
 
 nohttp:
   stage: check
@@ -78,6 +79,7 @@ maven-package:
       - target/*.jar
       - target/classes
     expire_in: 1 day
+
 
 # Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
 #docker-push:
