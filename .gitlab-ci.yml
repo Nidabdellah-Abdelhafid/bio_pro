@@ -13,18 +13,20 @@ stages:
   - release
   - deploy
 before_script:
-  - export MAVEN_USER_HOME=`pwd`/.maven
-  - chmod +x mvnw
+  - export NG_CLI_ANALYTICS="false"
+  - export MAVEN_USER_HOME=pwd/.maven
+  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v12.16.1 -DnpmVersion=6.14.2 -Dmaven.repo.local=$MAVEN_USER_HOME
+  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
 nohttp:
   stage: check
   script:
     - ./mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
-    
+
 maven-compile:
   stage: build
   script:
-    - ./mvnw -ntp compile -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
+    - ./mvnw -ntp compile -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     paths:
       - target/classes/
@@ -32,34 +34,21 @@ maven-compile:
     expire_in: 1 day
 
 maven-test:
-  services:
-    - docker:dind
-
-  variables:
-    # Instruct Testcontainers to use the daemon of DinD.
-    DOCKER_HOST: 'tcp://docker:2375'
-    # Improve performance with overlayfs.
-    DOCKER_DRIVER: overlay2
-
   stage: test
   script:
-    - ./mvnw -ntp verify -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
+    - ./mvnw -ntp verify -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     reports:
-      junit:
-        - target/surefire-reports/TEST-*.xml
-        - target/failsafe-reports/TEST-*.xml
+      junit: target/test-results/*/TEST-.xml
     paths:
-      - target/surefire-reports
-      - target/failsafe-reports
-      - target/site
+      - target/test-results
+      - target/jacoco
     expire_in: 1 day
 
 frontend-test:
   stage: test
   script:
-    - npm install
-    - npm test
+    - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='run test' -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     reports:
       junit: target/test-results/TESTS-results-jest.xml
@@ -77,14 +66,14 @@ maven-package:
       - target/*.jar
       - target/classes
     expire_in: 1 day
-# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
-#docker-push:
-#    stage: release
-#    variables:
-#        REGISTRY_URL: registry.gitlab.com
-#        IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
-#    dependencies:
-#        - maven-package
-#    script:
-#        - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
 
+# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
+docker-push:
+  stage: release
+  variables:
+    REGISTRY_URL: registry.gitlab.com
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+  dependencies:
+    - maven-package
+  script:
+    - ./mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
