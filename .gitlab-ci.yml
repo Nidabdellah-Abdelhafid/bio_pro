@@ -15,7 +15,7 @@ stages:
   - deploy
 
 before_script:
-  - echo 'ALL ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+  - echo 'ALL ALL=(ALL) NOPASSWD:ALL' | sudo EDITOR='tee -a' visudo
   - sudo chmod +x mvnw
   - export MAVEN_USER_HOME=`pwd`/.mvnw
 
