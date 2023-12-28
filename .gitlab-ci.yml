@@ -14,7 +14,8 @@ stages:
 
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
-  - export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"  # Adjust the path based on your Java installation
+  - export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-amd64"
+  - export PATH="$JAVA_HOME/bin:$PATH"
   - chmod +x mvnw
   - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm@install-node-and-npm -Dmaven.repo.local=$MAVEN_USER_HOME
   - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
