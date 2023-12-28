@@ -20,7 +20,7 @@ build:
   stage: build
   script:
     - echo "In build phase"
-    - export JAVA_HOME=$(dirname $(dirname $(readlink $(which javac))))
+    - export JAVA_HOME=$(update-alternatives --list javac | grep "bin/javac" | sed 's|/bin/javac||g')
     - ./mvnw package -Pprod verify jib:dockerBuild -DskipTests --image=$CONTAINER_TEST_IMAGE
     - docker push $CONTAINER_TEST_IMAGE
 
