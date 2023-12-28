@@ -4,6 +4,7 @@ cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
     - .maven/
+
 stages:
   - check
   - build
@@ -12,8 +13,12 @@ stages:
   - package
   - release
   - deploy
+
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
+  - chmod +x mvnw
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
 nohttp:
   stage: check
@@ -35,9 +40,7 @@ maven-test:
     - docker:dind
 
   variables:
-    # Instruct Testcontainers to use the daemon of DinD.
     DOCKER_HOST: 'tcp://docker:2375'
-    # Improve performance with overlayfs.
     DOCKER_DRIVER: overlay2
 
   stage: test
@@ -76,6 +79,7 @@ maven-package:
       - target/*.jar
       - target/classes
     expire_in: 1 day
+
 # Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
 #docker-push:
 #    stage: release
