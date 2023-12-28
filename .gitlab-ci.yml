@@ -1,7 +1,7 @@
-image: openjdk:11-jdk
+image: docker:latest
 
 services:
-  - docker:latest
+  - docker:dind
 
 stages:
   - build
