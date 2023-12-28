@@ -11,7 +11,7 @@ stages:
   - release
   - deploy
 before_script:
-  - export MAVEN_USER_HOME=`CD`/.maven
+  - export MAVEN_USER_HOME=`pwd`/.maven
   - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm@install-node-and-npm -Dmaven.repo.local=$MAVEN_USER_HOME
   - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
