@@ -9,7 +9,13 @@ image: docker:latest
 #    - redis-cli -h redis PING
 
 services:
-  - docker:dind
+    - docker:dind
+
+  variables:
+    # Instruct Testcontainers to use the daemon of DinD.
+    DOCKER_HOST: 'tcp://docker:2375'
+    # Improve performance with overlayfs.
+    DOCKER_DRIVER: overlay2
 
 stages:
   - build
@@ -20,6 +26,7 @@ variables:
   CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
 
 before_script:
+  - export NG_CLI_ANALYTICS="false"
   - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
