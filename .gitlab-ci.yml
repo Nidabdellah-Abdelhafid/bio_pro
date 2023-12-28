@@ -14,12 +14,13 @@ stages:
   - deploy
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
+  - chmod +x mvnw
 
 nohttp:
   stage: check
   script:
     - ./mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
-
+    
 maven-compile:
   stage: build
   script:
