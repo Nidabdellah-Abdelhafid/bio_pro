@@ -12,6 +12,7 @@ stages:
   - deploy
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
+  - chmod +x mvnw
   - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm@install-node-and-npm -Dmaven.repo.local=$MAVEN_USER_HOME
   - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
@@ -76,4 +77,5 @@ maven-package:
 #        - maven-package
 #    script:
 #        - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+
 
