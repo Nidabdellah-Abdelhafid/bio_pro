@@ -28,26 +28,6 @@ nohttp:
   script:
     - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
 
-maven-compile:
-  stage: build
-  script:
-    - bash mvnw -ntp compile -Dmaven.repo.local=$MAVEN_USER_HOME
-  artifacts:
-    paths:
-      - target/classes/
-      - target/generated-sources/
-    expire_in: 1 day
-
-maven-package:
-  stage: package
-  script:
-    - bash mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
-  artifacts:
-    paths:
-      - target/*.jar
-      - target/classes
-    expire_in: 1 day
-
 # Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
 docker-push:
   stage: release
@@ -57,4 +37,4 @@ docker-push:
   dependencies:
     - maven-package
   script:
-    - bash mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME
