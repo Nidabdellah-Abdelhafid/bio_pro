@@ -37,5 +37,5 @@ docker-push:
   dependencies:
     - maven-package
   script:
-    - bash mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp compile jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME  -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME
     
