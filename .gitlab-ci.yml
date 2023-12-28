@@ -4,7 +4,6 @@ cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
     - .maven/
-
 stages:
   - check
   - build
@@ -13,13 +12,9 @@ stages:
   - package
   - release
   - deploy
-
 before_script:
   - chmod +x mvnw
-  - git update-index --chmod=+x mvnw
   - export MAVEN_USER_HOME=`pwd`/.maven
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-  - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
 nohttp:
   stage: check
@@ -41,7 +36,9 @@ maven-test:
     - docker:dind
 
   variables:
+    # Instruct Testcontainers to use the daemon of DinD.
     DOCKER_HOST: 'tcp://docker:2375'
+    # Improve performance with overlayfs.
     DOCKER_DRIVER: overlay2
 
   stage: test
@@ -91,3 +88,5 @@ maven-package:
 #    script:
 #        - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
 
+r push $CONTAINER_RELEASE_IMAGE
+r push $CONTAINER_RELEASE_IMAGE
