@@ -3,7 +3,7 @@ image: jhipster/jhipster:v7.9.3
 cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
-    - .maven/
+    - .mvnw/
 stages:
   - check
   - build
@@ -13,8 +13,9 @@ stages:
   - release
   - deploy
 before_script:
-  - export MAVEN_USER_HOME=`pwd`/.maven
   - chmod +x mvnw
+  - export MAVEN_USER_HOME=`pwd`/.mvnw
+  
 
 nohttp:
   stage: check
