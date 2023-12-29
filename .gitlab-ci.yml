@@ -1,7 +1,7 @@
 image: jhipster/jhipster:v7.9.3
 services:
-  image: docker:latest
-  
+  - docker:latest
+
 cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
