@@ -20,9 +20,9 @@ before_script:
   - echo "Environment Variables:"
   - printenv
   - echo "Your Other Commands..."
-  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v12.16.1 -DnpmVersion=6.14.2 -Dmaven.repo.local=$MAVEN_USER_HOME
-  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
-  
+  - /bin/sh mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v12.16.1 -DnpmVersion=6.14.2 -Dmaven.repo.local=$MAVEN_USER_HOME
+  - /bin/sh mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
+
 
 docker-push:
   stage: release
@@ -30,5 +30,5 @@ docker-push:
     REGISTRY_URL: registry.gitlab.com
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
   script:
-    - bash mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
+    - /bin/sh mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
 
