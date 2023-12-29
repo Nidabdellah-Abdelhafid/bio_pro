@@ -1,8 +1,9 @@
+image: jhipster/jhipster:v7.9.3
+
 cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
     - .maven/
-
 stages:
   - check
   - build
@@ -12,22 +13,22 @@ stages:
   - release
   - deploy
 
+variables:
+  CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+  CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
+
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
-  - export PATH="/usr/lib/jvm/java-1.8.0-openjdk-amd64/bin:$PATH"
-  - chmod +x mvnw
-  - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm@install-node-and-npm -Dmaven.repo.local=$MAVEN_USER_HOME
-  - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
 nohttp:
   stage: check
   script:
-    - ./mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
 
 maven-compile:
   stage: build
   script:
-    - ./mvnw -ntp compile -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp compile -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     paths:
       - target/classes/
@@ -35,9 +36,18 @@ maven-compile:
     expire_in: 1 day
 
 maven-test:
+  services:
+    - docker:dind
+
+  variables:
+    # Instruct Testcontainers to use the daemon of DinD.
+    DOCKER_HOST: 'tcp://docker:2375'
+    # Improve performance with overlayfs.
+    DOCKER_DRIVER: overlay2
+
   stage: test
   script:
-    - ./mvnw -ntp verify -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp verify -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     reports:
       junit:
@@ -52,7 +62,8 @@ maven-test:
 frontend-test:
   stage: test
   script:
-    - ./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dfrontend.npm.arguments='run test-ci' -Dmaven.repo.local=$MAVEN_USER_HOME
+    - npm install
+    - npm test
   artifacts:
     reports:
       junit: target/test-results/TESTS-results-jest.xml
@@ -64,22 +75,21 @@ frontend-test:
 maven-package:
   stage: package
   script:
-    - ./mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     paths:
       - target/*.jar
       - target/classes
     expire_in: 1 day
-
 # Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
-#docker-push:
-#    stage: release
-#    variables:
-#        REGISTRY_URL: registry.gitlab.com
-#        IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
-#    dependencies:
-#        - maven-package
+docker-push:
+    stage: release
+    variables:
+        REGISTRY_URL: registry.gitlab.com
+        IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+    dependencies:
+        - maven-package
 #    script:
-#        - ./mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+#        - bash mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
 
-
+............
