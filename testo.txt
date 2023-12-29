@@ -27,7 +27,7 @@ nohttp:
 
 maven-compile:
   stage: build
-  script:ddd
+  script:dddcc
     - bash mvnw -ntp compile -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
   artifacts:
     paths:
