@@ -1,4 +1,4 @@
-image: jhipster/jhipster:v7.9.3
+image: docker:latest
 services:
   - docker:dind
 cache:
@@ -22,7 +22,7 @@ before_script:
   - echo "Environment Variables:"
   - printenv
   - echo "Your Other Commands..."
-  
+
 docker-push:
   stage: release
   variables:
