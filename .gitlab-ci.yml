@@ -18,11 +18,9 @@ before_script:
   - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
 docker-push:
-  services:
-      - docker:dind
   stage: release
   variables:
     REGISTRY_URL: registry.gitlab.com
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
   script:
-    - bash mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
+    - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app -w /app jhipster/jhipster:v7.9.3 bash -c "mvn -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11"
