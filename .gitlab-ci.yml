@@ -18,12 +18,12 @@ before_script:
 nohttp:
   stage: check
   script:
-    - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
 
 maven-compile:
   stage: build
   script:
-    - bash mvnw -ntp compile -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp compile -P-webapp -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
   artifacts:
     paths:
       - target/classes/
@@ -33,7 +33,7 @@ maven-compile:
 maven-package:
   stage: package
   script:
-    - bash mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+    - bash mvnw -ntp verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
   artifacts:
     paths:
       - target/*.jar
@@ -48,5 +48,5 @@ docker-push:
     dependencies:
         - maven-package
     script:
-        - bash mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME
+        - bash mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=gitlab-ci-token  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
 
