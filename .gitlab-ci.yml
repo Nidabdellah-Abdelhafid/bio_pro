@@ -18,6 +18,8 @@ before_script:
   - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
 
 docker-push:
+  services:
+      - docker:dind
   stage: release
   variables:
     REGISTRY_URL: registry.gitlab.com
