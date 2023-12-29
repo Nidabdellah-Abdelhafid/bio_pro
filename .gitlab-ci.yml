@@ -1,6 +1,7 @@
-image: docker:latest
+image: jhipster/jhipster:v7.9.3
 services:
-  - docker:dind
+  image: docker:latest
+  
 cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
@@ -15,18 +16,19 @@ stages:
 before_script:
   - export NG_CLI_ANALYTICS="false"
   - export MAVEN_USER_HOME=`pwd`/.maven
-  - export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"  # Adjust the path based on your Java version
-  - export PATH="$JAVA_HOME/bin:$PATH"
+  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm -DnodeVersion=v12.16.1 -DnpmVersion=6.14.2 -Dmaven.repo.local=$MAVEN_USER_HOME
+  - bash mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm -Dmaven.repo.local=$MAVEN_USER_HOME
   - echo "Docker Version:"
   - docker version
   - echo "Environment Variables:"
   - printenv
   - echo "Your Other Commands..."
-
+  
 docker-push:
   stage: release
   variables:
     REGISTRY_URL: registry.gitlab.com
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
   script:
-    - /bin/sh mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
+    - bash mvnw -ntp package -Pprod verify jib:dockerBuild -DskipTests -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$DOCKERHUB_USERNAME -Djib.to.auth.password=$DOCKERHUB_PASSWORD -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
+
