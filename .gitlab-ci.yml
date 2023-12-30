@@ -55,7 +55,7 @@ docker-push:
 
 docker-push-hub:
   image : docker
-  service : 
+  services: 
     - docker:dind
   stage: docker-push
   script:
