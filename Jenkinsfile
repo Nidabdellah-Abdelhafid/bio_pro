@@ -6,7 +6,7 @@ node {
     }
     
     agent any
-    retry (3) {
+
     stage('checkout') {
         checkout scm
     }
@@ -34,6 +34,6 @@ node {
             }
         }
     }
-}
+
     
 }
