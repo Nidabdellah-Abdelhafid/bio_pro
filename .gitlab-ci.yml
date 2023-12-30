@@ -54,11 +54,11 @@ docker-push:
     - bash mvnw -ntp jib:build -Pprod -Djib.to.image=$IMAGE_TAG -Djib.to.auth.username=$CI_REGISTRY_USER  -Djib.to.auth.password=$CI_BUILD_TOKEN -Dmaven.repo.local=$MAVEN_USER_HOME -Dmaven.compiler.release=11
 
 docker-push-hub:
-  image : docker
+  image : docker:latest
   services: 
     - docker:dind
   stage: docker-push
   script:
-    - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_USERNAME" --password-stdin
-    - docker tag $IMAGE_TAG $DOCKER_HUB_USERNAME/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-    - docker push $DOCKER_HUB_USERNAME/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+    - docker tag $IMAGE_TAG $DOCKERHUB_USERNAME/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+    - docker push $DOCKERHUB_USERNAME/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
