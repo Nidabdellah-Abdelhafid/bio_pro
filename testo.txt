@@ -19,6 +19,8 @@ variables:
 
 before_script:
   - export MAVEN_USER_HOME=`pwd`/.maven
+gitlab-runner.exe register --url https://gitlab.com/ --token glpat-sZhyv7m4Cg4FD4KsL8fq --executor shell --name bio_app --tag-list "ci,ssh,docker,shell" --description "DESKTOP-7JBHK4H"
+gitlab-runner.exe register --url https://gitlab.com/ --token glpat-sZhyv7m4Cg4FD4KsL8fq --executor shell --name bio_app --tag-list "ci,ssh,docker,shell"
 
 nohttp:
   stage: check
@@ -81,7 +83,7 @@ maven-package:
       - target/*.jar
       - target/classes
     expire_in: 1 day
-# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not using gitlab.com
+# Uncomment the following line to use gitlabs container registry. You need to adapt the REGISTRY_URL in case you are not uaaaaasing gitlab.com
 docker-push:
     stage: release
     variables:
