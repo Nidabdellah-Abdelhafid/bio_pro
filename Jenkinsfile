@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 
 node {
+    options {
+        timeout(time: 15, unit: 'MINUTES')
+    }
+    
+    agent any
+    
     stage('checkout') {
         checkout scm
     }
