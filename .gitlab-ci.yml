@@ -47,7 +47,7 @@ docker-push:
   stage: release
   variables:
     REGISTRY_URL: registry.gitlab.com
-    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
   dependencies:
     - maven-package
   script:
@@ -59,13 +59,14 @@ docker-push-hub:
     - docker:dind
   stage: docker-push
   script:
-    - echo $CI_BUILD_TOKEN | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - echo $CI_BUILD_TOKEN | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
     - echo "CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE"
     - echo "CI_COMMIT_REF_SLUG $CI_COMMIT_REF_SLUG"
     - echo "CI_COMMIT_SHA $CI_COMMIT_SHA"
-    - echo "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
-    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
-    - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" "$DOCKERHUB_USERNAME/bio_app:latest"
+    - echo "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG"
+    - docker pull "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG"
+    - docker tag "$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG" "$DOCKERHUB_USERNAME/bio_app:latest"
     - docker push "$DOCKERHUB_USERNAME/bio_app:latest"
 
 
