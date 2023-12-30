@@ -65,7 +65,7 @@ docker-push-hub:
     - echo "CI_COMMIT_SHA $CI_COMMIT_SHA"
     - echo "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
     - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
-    - docker tag "$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" "$DOCKERHUB_USERNAME/bio_app:latest"
+    - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" "$DOCKERHUB_USERNAME/bio_app:latest"
     - docker push "$DOCKERHUB_USERNAME/bio_app:latest"
 
 
