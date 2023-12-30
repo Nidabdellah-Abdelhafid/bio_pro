@@ -59,7 +59,7 @@ docker-push-hub:
     - docker:dind
   stage: docker-push
   script:
-    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
+    - echo $CI_BUILD_TOKEN | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --password-stdin
     - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" "$DOCKERHUB_USERNAME/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
     - docker push "$DOCKERHUB_USERNAME/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA"
 
