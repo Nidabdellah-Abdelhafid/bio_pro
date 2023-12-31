@@ -1,5 +1,5 @@
 image: jhipster/jhipster:v7.9.3
-
+dckr_pat_fzJq1NwK0-Yx2ymZiDBo7P0rUFA
 cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
