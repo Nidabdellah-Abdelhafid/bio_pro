@@ -1,10 +1,6 @@
-options {
-    timeout(time: 30, unit: 'MINUTES')
-}
-
 pipeline {
     agent any
-
+    
     stages {
         stage('checkout source') {
             steps {
@@ -20,9 +16,9 @@ pipeline {
 
         stage('build') {
             steps {
-                gitlabCommitStatus('build') {
-                    docker.image('jhipster/jhipster:v7.9.3').inside('-u jhipster -e MAVEN_OPTS="-Duser.home=./"') {
-                        script {
+                script {
+                    gitlabCommitStatus('build') {
+                        docker.image('jhipster/jhipster:v7.9.3').inside('-u jhipster -e MAVEN_OPTS="-Duser.home=./"') {
                             // Your existing stages go here
                             stage('check java') {
                                 sh "java -version"
