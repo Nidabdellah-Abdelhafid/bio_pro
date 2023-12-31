@@ -19,7 +19,6 @@ pipeline {
                 script {
                     def commitStatus = { status ->
                         script {
-                            // Assuming you have a plugin providing gitlabCommitStatus step
                             gitlabCommitStatus(
                                 name: 'Build Status',
                                 color: status ? 'success' : 'failed',
@@ -49,10 +48,12 @@ pipeline {
                             sh "./mvnw -ntp verify -P-webapp -Pprod -DskipTests"
                             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
                         }
+                        
+                        // Set final commit status
+                        script {
+                            commitStatus(currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
+                        }
                     }
-
-                    // Set final commit status
-                    commitStatus(currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
                 }
             }
         }
