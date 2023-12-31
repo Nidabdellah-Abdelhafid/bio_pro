@@ -26,7 +26,7 @@ nohttp:
   stage: check
   script:
     - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
-sssssssssssasas
+sssssssssssasas compile generate-resources  package
 maven-compile:
   stage: build
   script:dddcc
@@ -40,7 +40,7 @@ maven-compile:
 maven-test:
   services:
     - docker:dind
-
+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
   variables:
     # Instruct Testcontainers to use the daemon of DinD.
     DOCKER_HOST: 'tcp://docker:2375'

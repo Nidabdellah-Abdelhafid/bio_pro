@@ -1,19 +1,10 @@
-# Base image
-FROM node:12-alpine
+FROM openjdk:8
 
-# Set working directory
-WORKDIR /app
 
-# Copy package.json and package-lock.json m
+EXPOSE 8080
 
-# Install dependencies
-RUN npm install
-
-# Copy project files
-COPY . .
-
-# Build Angular app
-RUN npm install
+# Build  app
+ADD target/app-biomedicale-0.0.1-SNAPSHOT.jar app-biomedicale-0.0.1-SNAPSHOT.jar
 
 # Set command to serve Angular app
-CMD ["npm", "start"]
+ENTRYPOINT [ "java" ,"-jar", "/app-biomedicale-0.0.1-SNAPSHOT.jar"]
