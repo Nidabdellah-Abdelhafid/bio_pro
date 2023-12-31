@@ -2,61 +2,40 @@ pipeline {
     agent any
     
     stages {
-        stage('checkout source') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/Nidabdellah-Abdelhafid/bio_pro.git'
+                // Checkout the code from the GitHub repository
+                git url: 'https://github.com/Nidabdellah-Abdelhafid/bio_pro.git'
             }
         }
-
-        stage('checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('build') {
+        
+        stage('Login') {
             steps {
                 script {
-                    // Assuming you have a plugin providing gitlabCommitStatus step
-                    def setCommitStatus = { status ->
-                        gitlabCommitStatus(
-                            name: 'Build Status',
-                            color: status ? 'success' : 'failed',
-                            ref: GIT_COMMIT,
-                            token: 'glpat-1MYRzyuv62b-_28iWNj-'
-                        )
-                    }
-
-                    // Set initial commit status
-                    setCommitStatus(true)
-
-                    docker.image('jhipster/jhipster:v7.9.3').inside('-u jhipster -e MAVEN_OPTS="-Duser.home=./"') {
-                        // Your existing stages go here
-                        stage('check java') {
-                            sh "java -version"
-                        }
-                        stage('nohttp') {
-                            sh "./mvnw -ntp checkstyle:check"
-                        }
-                        stage('install tools') {
-                            sh "./mvnw -ntp com.github.eirslett:frontend-maven-plugin:install-node-and-npm@install-node-and-npm"
-                        }
-                        stage('npm install') {
-                            sh "./mvnw -ntp com.github.eirslett:frontend-maven-plugin:npm"
-                        }
-                        stage('packaging') {
-                            sh "./mvnw -ntp verify -P-webapp -Pprod -DskipTests"
-                            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-                        }
-                    }
-
-                    // Set final commit status
-                    setCommitStatus(currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
+                    // Login to Docker Hub with credentials
+                    bat  'docker login -u hafidnid -p haFI99D#33'
+                }
+            }
+        }
+        
+        stage('Build Project') {
+            steps {
+                script {
+                  
+                    // Build the project and create a Docker image
+                    bat  './mvnw package -Pprod -DskipTests verify jib:dockerBuild'
+                }
+            }
+        }
+        
+        stage('Push') {
+            steps {
+                script {
+                    // Push the Docker image to Docker Hub
+                    bat  'docker push hafidnid/app_biomedicale_db_local_finale:latest'
                 }
             }
         }
     }
 }
-
-
 
