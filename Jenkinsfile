@@ -17,19 +17,18 @@ pipeline {
         stage('build') {
             steps {
                 script {
-                    def commitStatus = { status ->
-                        script {
-                            // Assuming you have a plugin providing gitlabCommitStatus step
-                            gitlabCommitStatus(
-                                name: 'Build Status',
-                                color: status ? 'success' : 'failed',
-                                ref: GIT_COMMIT,
-                                token: 'glpat-1MYRzyuv62b-_28iWNj-'
-                            )
-                        }
+                    // Assuming you have a plugin providing gitlabCommitStatus step
+                    def setCommitStatus = { status ->
+                        gitlabCommitStatus(
+                            name: 'Build Status',
+                            color: status ? 'success' : 'failed',
+                            ref: GIT_COMMIT,
+                            token: 'glpat-1MYRzyuv62b-_28iWNj-'
+                        )
                     }
 
-                    commitStatus(true) // Set initial commit status
+                    // Set initial commit status
+                    setCommitStatus(true)
 
                     docker.image('jhipster/jhipster:v7.9.3').inside('-u jhipster -e MAVEN_OPTS="-Duser.home=./"') {
                         // Your existing stages go here
@@ -52,9 +51,12 @@ pipeline {
                     }
 
                     // Set final commit status
-                    commitStatus(currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
+                    setCommitStatus(currentBuild.resultIsBetterOrEqualTo('SUCCESS'))
                 }
             }
         }
     }
 }
+
+
+
