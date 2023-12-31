@@ -12,7 +12,7 @@ stages:
   - package
   - release
   - deploy
-
+d850be30e4fc4c56a36187e3ff67a208
 variables:
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $DOCKERHUB_USERNAME/lab:latest
@@ -26,7 +26,7 @@ nohttp:
   stage: check
   script:
     - bash mvnw -ntp checkstyle:check -Dmaven.repo.local=$MAVEN_USER_HOME
-
+sssssssssss
 maven-compile:
   stage: build
   script:dddcc
