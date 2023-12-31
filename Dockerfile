@@ -1,6 +1,7 @@
 # Stage 1: Build frontend
 FROM jhipster/jhipster:v7.9.3 as frontend
 WORKDIR /app
+COPY package.json .
 COPY src/main/webapp .
 RUN npm install && npm run webpack:prod
 
