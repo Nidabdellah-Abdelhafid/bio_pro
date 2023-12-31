@@ -6,6 +6,12 @@ node {
     }
     
     agent any
+    
+    stage('checkout source') {
+        steps{
+	   git 'https://github.com/Nidabdellah-Abdelhafid/bio_pro.git'
+	}
+    }
 
     stage('checkout') {
         checkout scm
