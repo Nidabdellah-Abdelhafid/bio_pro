@@ -13,39 +13,21 @@ pipeline {
             steps {
                 script {
                     // Login to Docker Hub with credentials
-                    bat  'docker login -u hafidnid -p haFI99D#33'
+                    bat 'docker login -u hafidnid -p haFI99D#33'
                 }
             }
         }
         
-        stage('Build Project') {
-            steps {
-                script {
-                  
-                    // Build the project and create a Docker image
-                    bat  './mvnw package -Pprod -DskipTests verify jib:dockerBuild'
-                }
-            }
-        }
-        
-        stage('Push') {
-            steps {
-                script {
-                    // Push the Docker image to Docker Hub
-                    bat  'docker push hafidnid/app_biomedicale_db_local_finale:latest'
-                }
-            }
-        }
-
         stage('Deploying App to Kubernetes') {
             steps {
                 script {
-                    
-                    kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "MY_KUBE_CONFIG")
+                    // Set the kubeconfig file path (adjust accordingly)
+                    def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
 
+                    // Deploy to Kubernetes using kubectl
+                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml", wait: true
                 }
             }
         }
     }
 }
-
