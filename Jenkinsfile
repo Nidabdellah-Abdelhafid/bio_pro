@@ -24,7 +24,7 @@ pipeline {
                     // Set the kubeconfig file path (adjust accordingly)
                     def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
 
-                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml --validate=false --timeout=50m", wait: true
+                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml --validate=false --timeout=30m", wait: true
 
                 }
             }
