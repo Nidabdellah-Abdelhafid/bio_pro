@@ -23,13 +23,11 @@ pipeline {
                 script {
                     // Set the kubeconfig file path (adjust accordingly)
                     def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
+                    def kubernetesAPI = 'https://192.168.49.2:8443'  // Update with your Minikube IP address
 
-                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml --validate=false --timeout=30m", wait: true
-
+                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml --validate=false --timeout=30m --server=${kubernetesAPI}"
                 }
             }
         }
     }
 }
-
-
