@@ -4,6 +4,19 @@ cache:
   key: '$CI_COMMIT_REF_NAME'
   paths:
     - .maven/
+---
+minikube update-context
+minikube start --driver=docker
+minikube status
+kubectl cluster-info
+kubectl get nodes
+
+
+
+---
+
+DROP TABLE DATABASECHANGELOG,DATABASECHANGELOGLOCK,boitier,boitier_capteur,boitier_patient,capteur,extra_user,jhi_authority,jhi_user,jhi_user_authority,medecin,medecin_patient,mesure,patient,video;
+mysql appbiomedica < /init.sql
 stages:
   - check
   - build
