@@ -36,6 +36,15 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploying App to Kubernetes') {
+            steps {
+                script {
+                    
+                   kubernetesDeploy(configs: "deployementservice.yml", kubeconfigId: "MY_KUBE_CONFIG")
+                }
+            }
+        }
     }
 }
 
