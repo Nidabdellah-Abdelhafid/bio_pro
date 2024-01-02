@@ -1,3 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - protocol: TCP
+      port: 15672
+      targetPort: 15672
+    - protocol: TCP
+      port: 5672
+      targetPort: 5672
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,27 +28,26 @@ spec:
         app: rabbitmq
     spec:
       containers:
-      - name: rabbitmq-container
-        image: hafidnid/rabbitmq:3.12.9-management
-        ports:
-        - containerPort: 5672
-        - containerPort: 15672
-        env:
-        - name: RABBITMQ_ERLANG_COOKIE
-          value: "rabbitcookie"
+        - name: rabbitmq
+          image: hafidnid/rabbitmq:3.12.9-management
+          env:
+            - name: RABBITMQ_ERLANG_COOKIE
+              value: rabbitcookie
+          ports:
+            - containerPort: 15672
+            - containerPort: 5672
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq-service
+  name: model-server-service
 spec:
   selector:
-    app: rabbitmq
+    app: model-server
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 5672
-  type: LoadBalancer
+      port: 6000
+      targetPort: 6000
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -50,97 +64,83 @@ spec:
         app: model-server
     spec:
       containers:
-      - name: model-server-container
-        image: hafidnid/model_image:latest
-        ports:
-        - containerPort: 6000
-        env:
-        - name: RABBITMQ_HOST
-          value: "rabbitmq"
+        - name: model-server
+          image: hafidnid/model_image:latest
+          ports:
+            - containerPort: 6000
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq-service
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 6000
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 6000
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 10"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: model-server-service
+  name: app-biomedicale-service
 spec:
   selector:
-    app: model-server
+    app: app-biomedicale
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 6000
-  type: LoadBalancer
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: mysql-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: mysql
-  template:
-    metadata:
-      labels:
-        app: mysql
-    spec:
-      containers:
-      - name: mysql-container
-        image: hafidnid/mysql:latest
-        ports:
-        - containerPort: 3306
-        env:
-        - name: MYSQL_ALLOW_EMPTY_PASSWORD
-          value: "1"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-service
-spec:
-  selector:
-    app: mysql
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3306
-  type: LoadBalancer
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-      - name: backend-container
-        image: hafidnid/app_biomedicale_db_local_finale:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: SPRING_RABBITMQ_HOST
-          value: "rabbitmq"
-        - name: SPRING_APPLICATION_JSON
-          value: '{"spring.datasource.url": "jdbc:mysql://mysql:3306/app_biomedicale?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true", "spring.datasource.username": "root", "spring.datasource.password": "", "spring.jpa.properties.hibernate.dialect": "org.hibernate.dialect.MySQLDialect", "spring.jpa.hibernate.ddl-auto": "none"}'
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend-service
-spec:
-  selector:
-    app: backend
-  ports:
-    - protocol: TCP
-      port: 80
+      port: 8080
       targetPort: 8080
-  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-biomedicale-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-biomedicale
+  template:
+    metadata:
+      labels:
+        app: app-biomedicale
+    spec:
+      containers:
+        - name: app-biomedicale
+          image: hafidnid/app_biomedicale_db_deploy_finale_f2:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              value: rabbitmq-service
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sh", "-c", "sleep 10"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
