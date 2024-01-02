@@ -13,21 +13,22 @@ pipeline {
             steps {
                 script {
                     // Login to Docker Hub with credentials
-                    bat 'docker login -u hafidnid -p haFI99D#33'
+                    bat  'docker login -u hafidnid -p haFI99D#33'
                 }
             }
         }
-        
+
         stage('Deploying App to Kubernetes') {
             steps {
                 script {
-                    // Set the kubeconfig file path (adjust accordingly)
-                    def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
-                    def kubernetesAPI = 'https://192.168.49.2:8443'  // Update with your Minikube IP address
+                    
+                    kubernetesDeploy(configs: "deploymentservice.yml", kubeconfigId: "MY_KUBE_CONFIG")
 
-                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml --validate=false --timeout=30m --server=${kubernetesAPI}"
                 }
             }
         }
     }
 }
+
+
+
