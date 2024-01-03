@@ -1,70 +1,40 @@
-# app-biomedicale-deployment.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: biomedicale
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-biomedicale-deployment
+  name: app-biomedicale-nmm
+  namespace: biomedicale
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app-biomedicale
+      app: app-biomedicale-nmm
   template:
     metadata:
       labels:
-        app: app-biomedicale
+        app: app-biomedicale-nmm
     spec:
       containers:
-        - name: app-biomedicale
+        - name: app-biomedicale-nmm
           image: hafidnid/app_biomedicale_deploy_finale_f3:latest
           ports:
             - containerPort: 8080
-          readinessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-          lifecycle:
-            preStop:
-              exec:
-                command: ["sh", "-c", "sleep 10"]
-          resources:
-            limits:
-              memory: "500Mi"  # Augmenter la limite de mémoire
-            requests:
-              memory: "500Mi"
 ---
-# app-biomedicale-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-biomedicale-service
+  name: app-biomedicale-nmm
+  namespace: biomedicale
 spec:
   selector:
-    app: app-biomedicale
+    app: app-biomedicale-nmm
   ports:
     - protocol: TCP
       port: 8080
       targetPort: 8080
----
-# app-biomedicale-ingress.yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: app-biomedicale-ingress
-spec:
-  rules:
-  - host: http://192.168.49.2/  # Replace with your actual domain
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app-biomedicale-service
-            port:
-              number: 8080
-
-
+  type: LoadBalancer
