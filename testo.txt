@@ -13,7 +13,7 @@ kubectl get nodes
 
 
 ------------------------------------------------------------------------
-------------------------
+------------------------llll
 
 DROP TABLE DATABASECHANGELOG,DATABASECHANGELOGLOCK,boitier,boitier_capteur,boitier_patient,capteur,extra_user,jhi_authority,jhi_user,jhi_user_authority,medecin,medecin_patient,mesure,patient,video;
 mysql appbiomedica < /init.sql
