@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: app-biomedicale
-          image: hafidnid/app_biomedicale_db_deploy_finale_f2:latest
+          image: hafidnid/app_biomedicale_deploy_finale_f3:latest
           ports:
             - containerPort: 8080
           readinessProbe:
