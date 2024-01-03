@@ -17,6 +17,25 @@ pipeline {
                 }
             }
         }
+
+        stage('Build Project') {
+            steps {
+                script {
+                  
+                    // Build the project and create a Docker image
+                    bat  './mvnw package -Pprod -DskipTests verify jib:dockerBuild'
+                }
+            }
+        }
+        
+        stage('Push') {
+            steps {
+                script {
+                    // Push the Docker image to Docker Hub
+                    bat  'docker push hafidnid/app_biomedicale_db_deploy2_finale:latest'
+                }
+            }
+        }
         
         stage('Deploying App to Kubernetes') {
             steps {
