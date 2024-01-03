@@ -14,7 +14,7 @@ export const Home = () => {
     <Row className="bgC">
       <Col md="10" className="offset-1 hipster">
         <h2 className="mt-5">
-          <p >Welcome, Platform for the acquisition and visualization of biomedical data 22!</p>
+          <p >Welcome, Platform for the acquisition and visualization of biomedical data 2232!</p>
         </h2>
         <p className="lead">
           <Translate contentKey="home.subtitle">This is your homepage</Translate>

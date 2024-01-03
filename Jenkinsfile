@@ -37,6 +37,17 @@ pipeline {
             }
         }
         
+        stage('Cleanup') {
+            steps {
+                script {
+                    def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
+
+                    // Delete existing deployments, services, and pods
+                    bat script: "kubectl delete deployments,services,pods --all --kubeconfig=${kubeconfig}"
+                }
+            }
+        }
+        
         stage('Deploying App to Kubernetes') {
             steps {
                 script {
