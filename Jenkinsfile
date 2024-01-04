@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     // Set the kubeconfig file path (adjust accordingly)
-
+                                                        
                     bat 'C:\\cygwin64\\bin\\bash -c "/cygdrive/c/cygwin64/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config deploy_app.yml"'
                 }
             }
