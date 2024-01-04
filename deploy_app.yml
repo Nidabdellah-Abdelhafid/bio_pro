@@ -2,15 +2,22 @@
 - name: Deploy Application to Kubernetes
   hosts: localhost
   gather_facts: false
-  connection: local  # Add this line to specify local connection
-
   tasks:
+    - name: Load Kubernetes Configuration
+      command: kubectl config view --minify --flatten
+      register: kubeconfig_output
+
+    - name: Set Kubernetes Configuration
+      set_fact:
+        kubeconfig_content: "{{ kubeconfig_output.stdout }}"
+      when: kubeconfig_output.rc == 0
+
+    - name: Debug Kubernetes Configuration
+      debug:
+        var: kubeconfig_content
+
+    # Add your tasks to deploy the application using kubectl
     - name: Apply Deployment
-      command: kubectl apply -f deployment.yml
+      command: kubectl apply -f deploymentservice.yml
       environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-      
-    - name: Apply Service
-      command: kubectl apply -f service.yml
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
+        KUBECONFIG: "{{ kubeconfig_content }}"
