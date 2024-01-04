@@ -5,11 +5,11 @@
 
   tasks:
     - name: Apply Deployment
-      command: kubectl apply -f deployment.yaml
+      command: kubectl apply -f deployment.yml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
       
     - name: Apply Service
-      command: kubectl apply -f service.yaml
+      command: kubectl apply -f service.yml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
