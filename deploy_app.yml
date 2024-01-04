@@ -1,6 +1,6 @@
 ---
 - name: Deploy Application to Kubernetes
-  hosts: localhost
+  hosts: 127.0.0.1:*
   gather_facts: false
   connection: local  # Add this line to specify local connection
 
