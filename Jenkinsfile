@@ -28,17 +28,26 @@ pipeline {
                 }
             }
         }
-        
-        stage('Deploying App to Kubernetes') {
-        steps {
-            script {
-                def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
 
-                // Run Ansible playbook for Kubernetes deployment within Cygwin environment
-                bat 'C:\\cygwin64\\bin\\ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config deploy_app.yml'
+        stage('Print Cygwin Environment') {
+            steps {
+                script {
+                    bat 'C:\\cygwin64\\bin\\bash -c "env"'
+                }
             }
         }
-    }
+        
+        stage('Deploying App to Kubernetes') {
+            steps {
+                script {
+                    def kubeconfig = 'C:\\Users\\HP\\.kube\\config'
+
+                    // Run Ansible playbook for Kubernetes deployment with full path
+                    bat '"C:\\cygwin64\\bin\\ansible-playbook" -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config deploy_app.yml'
+                }
+            }
+        }
+
 
     }
 }
