@@ -36,7 +36,7 @@ pipeline {
                     def kubeconfig = 'C:\\Users\\HP\\.kube\\config'  // Update with your Minikube IP address
                     //def cygwin64='C:\\cygwin64\\bin\\ansible-playbook'
                     //bat "\"C:\\cygwin64\\bin\\ansible-playbook\" -i localhost, -e kubeconfig=${kubeconfig} deploy_app.yml"
-                    bat 'C:\\cygwin64\\bin\\bash -c "/cygdrive/c/cygwin64/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config bio_pro/deploy_app.yml"'
+                    bat 'C:\\cygwin64\\bin\\bash -c "/cygdrive/c/cygwin64/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config deploy_app.yml"'
                 }
             }
         }
