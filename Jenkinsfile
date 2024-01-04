@@ -34,8 +34,9 @@ pipeline {
                 script {
                     // Set the kubeconfig file path (adjust accordingly)
                     def kubeconfig = 'C:\\Users\\HP\\.kube\\config'  // Update with your Minikube IP address
-                    
-                    bat "ansible-playbook -i localhost, -e kubeconfig=${kubeconfig} deploy_app.yml"
+                    def cygwin64='C:\\cygwin64\\bin\\ansible-playbook'
+                    bat "${cygwin64} -i localhost, -e kubeconfig=${kubeconfig} deploy_app.yml"
+
                 }
             }
         }
