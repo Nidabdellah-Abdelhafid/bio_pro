@@ -2,6 +2,7 @@
 - name: Deploy Application to Kubernetes
   hosts: localhost
   gather_facts: false
+  connection: local  # Add this line to specify local connection
 
   tasks:
     - name: Apply Deployment
