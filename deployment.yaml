@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-biomedicale-nmm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-biomedicale-nmm
+  template:
+    metadata:
+      labels:
+        app: app-biomedicale-nmm
+    spec:
+      containers:
+        - name: app-biomedicale-nmm
+          image: hafidnid/app_biomedicale_db_deploy2_finale:latest
+          ports:
+            - containerPort: 8080

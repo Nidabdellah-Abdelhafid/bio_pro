@@ -1,0 +1,15 @@
+---
+- name: Deploy Application to Kubernetes
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Apply Deployment
+      command: kubectl apply -f deployment.yaml
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+      
+    - name: Apply Service
+      command: kubectl apply -f service.yaml
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"

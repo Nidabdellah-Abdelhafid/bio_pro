@@ -18,25 +18,6 @@ pipeline {
             }
         }
 
-        stage('Build Project') {
-            steps {
-                script {
-                  
-                    // Build the project and create a Docker image
-                    bat  './mvnw package -Pprod -DskipTests verify jib:dockerBuild'
-                }
-            }
-        }
-        
-        stage('Push') {
-            steps {
-                script {
-                    // Push the Docker image to Docker Hub
-                    bat  'docker push hafidnid/app_biomedicale_db_deploy2_finale:latest'
-                }
-            }
-        }
-        
         stage('Cleanup') {
             steps {
                 script {
@@ -53,8 +34,8 @@ pipeline {
                 script {
                     // Set the kubeconfig file path (adjust accordingly)
                     def kubeconfig = 'C:\\Users\\HP\\.kube\\config'  // Update with your Minikube IP address
-
-                    bat script: "kubectl apply --kubeconfig=${kubeconfig} -f deploymentservice.yml --validate=false --timeout=30m"
+                    
+                    bat "ansible-playbook -i localhost, -e kubeconfig=${kubeconfig} deploy_app.yml"
                 }
             }
         }
