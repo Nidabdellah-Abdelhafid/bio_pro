@@ -2,6 +2,7 @@
 - name: Deploy Application to Kubernetes
   hosts: localhost
   gather_facts: false
+  connection: local  # Set the connection type to local
   tasks:
     - name: Load Kubernetes Configuration
       command: kubectl config view --minify --flatten
@@ -18,6 +19,6 @@
 
     # Add your tasks to deploy the application using kubectl
     - name: Apply Deployment
-      command: kubectl apply -f deploymentservice.yml
+      command: kubectl apply -f your_deployment_file.yml
       environment:
         KUBECONFIG: "{{ kubeconfig_content }}"
