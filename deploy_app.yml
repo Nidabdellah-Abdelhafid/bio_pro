@@ -9,6 +9,7 @@
       command: kubectl apply -f deployment.yml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+        TMPDIR: /cygdrive/c/cygwin64/home/HP/.ansible/tmp
       
     - name: Apply Service
       command: kubectl apply -f service.yml
