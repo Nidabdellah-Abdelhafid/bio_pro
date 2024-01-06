@@ -33,8 +33,11 @@ pipeline {
             steps {
                 script {
                     echo 'Running Ansible Playbook...'
-                    powershell 'icacls C:\\cygwin\\tmp\\ansible /grant:r "USER:(OI)(CI)F"'
-                    echo 'per sc...'
+                    echo 'Prepare Environment'
+                    // Grant necessary permissions using icacls
+                    bat 'icacls C:\\cygwin\\tmp\\ansible /grant:r "USER:(OI)(CI)F"'
+                    
+                    echo 'Prepare Environment passed ...'
                     echo "Kubeconfig Path: C:/Users/HP/.kube/config"
                     echo "Working Directory: ${WORKSPACE}"
                     echo "Cygwin Path: C:\\cygwin\\bin\\bash"
