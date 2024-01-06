@@ -36,7 +36,9 @@ pipeline {
                     echo "Kubeconfig Path: C:/Users/HP/.kube/config"
                     echo "Working Directory: ${WORKSPACE}"
                     echo "Cygwin Path: C:\\cygwin\\bin\\bash"
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=C:/Users/HP/.kube/config deploy_app.yml"'
+                    //bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=C:/Users/HP/.kube/config deploy_app.yml"'
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=ansible.cfg deploy_app.yml"'
+
                 }
 
             }
