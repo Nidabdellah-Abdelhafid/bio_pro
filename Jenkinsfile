@@ -33,12 +33,6 @@ pipeline {
             steps {
                 script {
                     echo 'Running Ansible Playbook...'
-                    echo 'Prepare Environment'
-                    // Take ownership of the directory
-                    echo 'Prepare Environment passed ...'
-                    echo "Kubeconfig Path: C:/Users/HP/.kube/config"
-                    echo "Working Directory: ${WORKSPACE}"
-                    echo "Cygwin Path: C:\\cygwin\\bin\\bash"
                     bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --user=HP deploy_app.yml"'
 
                 }
