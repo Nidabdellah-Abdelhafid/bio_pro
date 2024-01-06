@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Use Ansible ad-hoc command for testing connection to localhost
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --become"'
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --become --extra-vars remote_tmp=/tmp/ansible"'
                 }
             }
         }
