@@ -2,16 +2,19 @@
 - name: Deploy Application to Kubernetes
   hosts: localhost
   gather_facts: false
-  connection: local  # Add this line to specify local connection
+  connection: local
 
   tasks:
     - name: Apply Deployment
-      command: kubectl apply -f deployment.yml
+      k8s:
+        definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
+        state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-        TMPDIR: "/tmp"
-      
+
     - name: Apply Service
-      command: kubectl apply -f service.yml
+      k8s:
+        definition: "{{ lookup('file', 'service.yml') | from_yaml }}"
+        state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
