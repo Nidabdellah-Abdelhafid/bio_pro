@@ -28,12 +28,12 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Test Ansible Connection') {
             steps {
                 script {
                     // Use Ansible ad-hoc command for testing connection to localhost
-                    sh 'ansible localhost -m ping'
+                    bat 'ansible localhost -m ping'
                 }
             }
         }
