@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Ansible Playbook...'
-                    bat 'chmod u+rwx /tmp/ansible'
+                    bat 'C:\\cygwin\\bin\\bash -c chmod u+rwx /tmp/ansible'
 
                     echo "Kubeconfig Path: C:/Users/HP/.kube/config"
                     echo "Working Directory: ${WORKSPACE}"
