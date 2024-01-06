@@ -37,7 +37,7 @@ pipeline {
                     // Take ownership of the directory
                     // Take ownership of the directory
                     //bat 'icacls C:\\cygwin\\tmp\\ansible /grant $env:USERNAME:(OI)(CI)F'
-                    bat 'powershell -Command "& {icacls C:\\cygwin\\tmp\\ansible /grant $env:USERNAME:(OI)(CI)F}"'
+                    bat 'powershell -Command "& {Get-Acl C:\\cygwin\\tmp\\ansible | Set-Acl -Path C:\\cygwin\\tmp\\ansible -Permission User:$env:USERNAME:(OI)(CI)F}"'
 
                     echo 'Prepare Environment passed ...'
                     echo "Kubeconfig Path: C:/Users/HP/.kube/config"
