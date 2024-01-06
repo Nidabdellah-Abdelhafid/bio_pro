@@ -44,7 +44,7 @@ pipeline {
             steps {
                 // Add your existing deployment steps here
                 script {
-                    bat 'start /B C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --user=HP deploy_app.yml"'
+                    bat 'powershell Start-Process -NoNewWindow -FilePath "C:\\cygwin\\bin\\bash" -ArgumentList \'/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --user=HP deploy_app.yml\''
                 }
             }
         }
