@@ -3,6 +3,8 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  vars:
+    ansible_user: "DESKTOP-7JBHK4H"
 
   tasks:
     - name: Set remote_tmp
