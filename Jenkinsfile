@@ -33,6 +33,8 @@ pipeline {
             steps {
                 script {
                     echo 'Running Ansible Playbook...'
+                    sh 'chmod u+rwx /tmp/ansible'
+
                     echo "Kubeconfig Path: C:/Users/HP/.kube/config"
                     echo "Working Directory: ${WORKSPACE}"
                     echo "Cygwin Path: C:\\cygwin\\bin\\bash"
