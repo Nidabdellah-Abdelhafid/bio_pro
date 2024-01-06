@@ -30,13 +30,9 @@ pipeline {
         }
 
         stage('Get Current User') {
-            steps {
-                script {
-                    def currentUser = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause).getUserId()
-                    echo "Current user: ${currentUser}"
-                }
-            }
-        }
+        def currentUser = currentBuild.rawBuild.getCause(hudson.model.Cause$UserIdCause).getUserId()
+        echo "Current user: ${currentUser}"
+    }
 
         stage('Test Ansible Connection') {
             steps {
