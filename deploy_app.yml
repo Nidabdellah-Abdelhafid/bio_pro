@@ -15,6 +15,7 @@
         state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+        remote_tmp: "{{ remote_tmp }}"
 
     - name: Apply Service
       k8s:
@@ -22,3 +23,4 @@
         state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+        remote_tmp: "{{ remote_tmp }}"
