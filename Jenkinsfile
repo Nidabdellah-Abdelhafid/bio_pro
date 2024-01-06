@@ -29,19 +29,22 @@ pipeline {
             }
         }
         
-        stage('Deploying App to Kubernetes') {
+        stages {
+        stage('Prepare Environment') {
             steps {
                 script {
-                    echo 'Running Ansible Playbook...'
+                    // Add the chmod command to give necessary permissions
                     sh 'chmod u+rwx /tmp/ansible'
-
-                    echo "Kubeconfig Path: C:/Users/HP/.kube/config"
-                    echo "Working Directory: ${WORKSPACE}"
-                    echo "Cygwin Path: C:\\cygwin\\bin\\bash"
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --user=HP deploy_app.yml"'
-
                 }
+            }
+        }
 
+        stage('Deploy Application') {
+            steps {
+                // Add your existing deployment steps here
+                script {
+                    sh 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --user=HP deploy_app.yml"'
+                }
             }
         }
         
