@@ -34,6 +34,9 @@ pipeline {
                 script {
                     echo 'Running Ansible Playbook...'
                     echo 'Prepare Environment'
+                    // Take ownership of the directory
+                    bat 'takeown /F C:\\cygwin\\tmp\\ansible /R /D Y'
+
                     // Grant necessary permissions using icacls
                     bat 'icacls C:\\cygwin\\tmp\\ansible /grant:r "USER:(OI)(CI)F"'
                     
