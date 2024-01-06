@@ -32,9 +32,10 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 script {
+                    echo 'Prepare Environment'
                     // Add the chmod command to give necessary permissions
                     sh 'chmod u+rwx /tmp/ansible'
-                    echo 'passed per...'
+                    echo 'Prepare Environment passed ...'
                 }
             }
         }
