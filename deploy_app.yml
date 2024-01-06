@@ -3,14 +3,21 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  vars:
+    remote_tmp: "/tmp/ansible-{{ ansible_user }}"
 
   tasks:
+    - name: Set remote_tmp
+      set_fact:
+        remote_tmp: "{{ remote_tmp }}"
+        
     - name: Apply Deployment
       k8s:
         definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
         state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
 
     - name: Apply Service
       k8s:
@@ -18,3 +25,4 @@
         state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
