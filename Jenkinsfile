@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     // Use Ansible ad-hoc command for testing connection to localhost
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --become --extra-vars remote_tmp=/tmp/ansible"'
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --become --extra-vars remote_tmp=/tmp/ansible-DESKTOP-7JBHK4H"'
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running Ansible Playbook.......'
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --extra-vars ansible_user=DESKTOP-7JBHK4H --extra-vars remote_tmp=/tmp/ansible --become deploy_app.yml"'
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --extra-vars ansible_user=DESKTOP-7JBHK4H --extra-vars remote_tmp=/tmp/ansible-DESKTOP-7JBHK4H deploy_app.yml"'
                 }
             }
         }
