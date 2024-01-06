@@ -28,12 +28,12 @@ pipeline {
                 }
             }
         }
-        
+
         // Add a new stage for Ansible ping command
         stage('Ansible Ping') {
             steps {
                 script {
-                    bat 'C:\\cygwin\\bin\\bash -c "ansible -i /etc/ansible/hosts local -m ping"'
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible -i /etc/ansible/hosts local -m ping"'
                 }
             }
         }
