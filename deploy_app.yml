@@ -5,17 +5,12 @@
   connection: local
 
   tasks:
-    - name: Set remote_tmp
-      set_fact:
-        remote_tmp: "/tmp/ansible-{{ ansible_user }}"
-
     - name: Apply Deployment
       k8s:
         definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
         state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-        remote_tmp: "{{ remote_tmp }}"
 
     - name: Apply Service
       k8s:
@@ -23,4 +18,3 @@
         state: present
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-        remote_tmp: "{{ remote_tmp }}"
