@@ -37,9 +37,12 @@ pipeline {
                     // Take ownership of the directory
                     bat 'takeown /F C:\\cygwin\\tmp\\ansible /R /A'
 
+                    // Wait for a short duration (e.g., 5 seconds) to allow ownership changes to take effect
+                    bat 'timeout /T 5 /NOBREAK'
+
                     // Grant necessary permissions using icacls
                     bat 'icacls C:\\cygwin\\tmp\\ansible /grant:r "USER:(OI)(CI)F"'
-                    
+                            
                     echo 'Prepare Environment passed ...'
                     echo "Kubeconfig Path: C:/Users/HP/.kube/config"
                     echo "Working Directory: ${WORKSPACE}"
