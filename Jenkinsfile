@@ -29,7 +29,14 @@ pipeline {
             }
         }
 
-
+        stage('Debug User') {
+            steps {
+                script {
+                    bat 'whoami'
+                }
+            }
+        }
+        
         stage('Test Ansible Connection') {
             steps {
                 script {
