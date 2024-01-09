@@ -5,7 +5,7 @@
   connection: local
   vars:
     remote_tmp: "/tmp/ansible-{{ ansible_user }}"
-    kubeconfig: "C:/Users/HP/.kube/config"  # Update this with the correct path
+    kubeconfig: "{{ kubeconfig }}"  # Update this with the correct path
 
   tasks:
     - name: Set remote_tmp
