@@ -5,6 +5,7 @@
   connection: local
   vars:
     remote_tmp: "/tmp/ansible-{{ ansible_user }}"
+    kubeconfig: "~/.kube/config"  # Use the default kubeconfig for Minikube
 
   tasks:
     - name: Set remote_tmp
