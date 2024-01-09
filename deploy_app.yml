@@ -1,37 +1,20 @@
 ---
-- name: Deploy Application to Kubernetes
+- name: Deploy Application to Minikube
   hosts: localhost
   gather_facts: false
   connection: local
   vars:
-    remote_tmp: "/tmp/ansible-{{ ansible_user }}"
     kubeconfig: "{{ kubeconfig }}"  # Update this with the correct path
 
   tasks:
-    - name: Set remote_tmp
-      set_fact:
-        remote_tmp: "{{ remote_tmp }}"
-
-    - name: Debug ansible_user
-      debug:
-        var: ansible_user
-
     - name: Debug Python Path
       debug:
         var: ansible_python | default('Python not found')
 
-    - name: Apply Deployment
-      k8s:
-        definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
-        state: present
+    - name: Apply Deployment and Service
+      command: kubectl apply -f "{{ item }}"
+      loop:
+        - deployment.yml
+        - service.yml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
-
-    - name: Apply Service
-      k8s:
-        definition: "{{ lookup('file', 'service.yml') | from_yaml }}"
-        state: present
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
