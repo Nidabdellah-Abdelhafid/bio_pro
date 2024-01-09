@@ -36,15 +36,16 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Test Ansible Connection') {
             steps {
                 script {
-                    // Use Ansible ad-hoc command for testing connection to localhost
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --become --extra-vars remote_tmp=/tmp/ansible-HP"'
+                    // Use Ansible ad-hoc command for testing connection to localhost without sudo
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --extra-vars remote_tmp=/tmp/ansible-HP"'
                 }
             }
         }
+
 
         stage('Deploying App to Kubernetes') {
             steps {
