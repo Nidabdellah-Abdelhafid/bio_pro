@@ -10,7 +10,11 @@
     - name: Set remote_tmp
       set_fact:
         remote_tmp: "{{ remote_tmp }}"
-        
+    
+    - name: Debug ansible_user
+      debug:
+        var: ansible_user
+
     - name: Apply Deployment
       k8s:
         definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
