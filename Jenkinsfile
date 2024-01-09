@@ -57,7 +57,7 @@ pipeline {
             }
         }
         stage('Deploying App to Kubernetes') {
-            steps {
+            step {
                 script {
                     echo 'Running Ansible Playbook.......'
                     bat 'C:\\cygwin\\bin\\python3.7.exe -m pip install kubernetes'  // Install the kubernetes module
