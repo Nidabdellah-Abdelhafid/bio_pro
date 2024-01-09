@@ -10,10 +10,14 @@
     - name: Set remote_tmp
       set_fact:
         remote_tmp: "{{ remote_tmp }}"
-    
+
     - name: Debug ansible_user
       debug:
         var: ansible_user
+
+    - name: Debug Python Path
+      debug:
+        var: ansible_python | default('Python not found')
 
     - name: Apply Deployment
       k8s:
