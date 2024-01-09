@@ -51,14 +51,14 @@ pipeline {
                 script {
                     echo 'Running Ansible Playbook.......'
                     
-                    // Set the REQUESTS_CA_BUNDLE environment variable
-                    bat 'SET REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt'
-                    
-                    // Install the kubernetes module
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/python3.7 -m pip install kubernetes"'
-                    
-                    // Run the Ansible playbook
-                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --extra-vars ansible_user=HP --extra-vars remote_tmp=/tmp/ansible-HP --extra-vars ansible_python_interpreter=/cygdrive/c/cygwin/bin/python3.7 deploy_app.yml -vvv"'
+                    // Set the REQUESTS_CA_BUNDLE environment variable using withEnv
+                    withEnv(["REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt"]) {
+                        // Install the kubernetes module
+                        bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/python3.7 -m pip install kubernetes"'
+                        
+                        // Run the Ansible playbook
+                        bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible-playbook -i localhost, -e kubeconfig=/cygdrive/c/Users/HP/.kube/config -e ANSIBLE_CONFIG=/cygdrive/c/cygwin/etc/ansible/ansible.cfg --extra-vars ansible_user=HP --extra-vars remote_tmp=/tmp/ansible-HP --extra-vars ansible_python_interpreter=/cygdrive/c/cygwin/bin/python3.7 deploy_app.yml -vvv"'
+                    }
                 }
             }
         }
