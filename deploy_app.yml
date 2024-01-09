@@ -5,8 +5,7 @@
   connection: local
   vars:
     remote_tmp: "/tmp/ansible-{{ ansible_user }}"
-    kubeconfig: "~/.kube/config"  # Use the default kubeconfig for Minikube
-    ansible_python_interpreter: "C:/cygwin/bin/python3.7"  # Path to the Python interpreter in Cygwin
+    kubeconfig: "C:/Users/HP/.kube/config"  # Update this with the correct path
 
   tasks:
     - name: Set remote_tmp
