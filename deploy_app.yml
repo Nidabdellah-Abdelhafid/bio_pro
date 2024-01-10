@@ -4,7 +4,7 @@
   connection: local
   vars:
     kubeconfig: "/cygdrive/c/Users/HP/.kube/config" # Update this with the correct path
-    minikube_ip: "192.168.49.2"
+    minikube_ip: "127.0.0.1"
 
   tasks:
     - name: Apply Deployment and Service
@@ -14,4 +14,4 @@
         - service.yml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
-        K8S_API_SERVER: "https://{{ minikube_ip }}:8443"
+        K8S_API_SERVER: "https://{{ minikube_ip }}:55305"
