@@ -1,17 +1,29 @@
+---
 - name: Deploy Application to Minikube
   hosts: localhost
-  connection: local
+  gather_facts: false
+  vars:
+    kubeconfig: "/cygdrive/c/Users/HP/.kube/config"
+
   tasks:
-    - name: Apply Deployment
-      command: kubectl apply -f /path/to/deployment.yml
+    - name: Debug Python Path
+      debug:
+        var: ansible_python | default('Python not found')
+
+    - name: Apply Deployment and Service
+      k8s:
+        definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
+        state: present
+        kubeconfig: "{{ kubeconfig }}"
+        validate: false  # Disable validation temporarily
       environment:
-        KUBECONFIG: /cygdrive/c/Users/HP/.kube/config
-        K8S_API_SERVER: https://192.168.49.2:8443  # Use your Minikube IP
-      ignore_errors: yes
+        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
 
     - name: Apply Service
-      command: kubectl apply -f /path/to/service.yml
+      k8s:
+        definition: "{{ lookup('file', 'service.yml') | from_yaml }}"
+        state: present
+        kubeconfig: "{{ kubeconfig }}"
+        validate: false  # Disable validation temporarily
       environment:
-        KUBECONFIG: /cygdrive/c/Users/HP/.kube/config
-        K8S_API_SERVER: https://192.168.49.2:8443  # Use your Minikube IP
-      ignore_errors: yes
+        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
