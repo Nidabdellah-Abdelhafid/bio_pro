@@ -18,6 +18,14 @@ pipeline {
             }
         }
 
+        stage('Run Ansible Connection') {
+            steps {
+                script {
+                    bat 'C:\\cygwin\\bin\\bash -c "/cygdrive/c/cygwin/bin/ansible localhost -m ping --extra-vars remote_tmp=/tmp/ansible-HP"'
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 script {
@@ -28,7 +36,7 @@ pipeline {
             }
         }
 
-        stage('Build image') {
+        stage('Build image Docker') {
             steps {
                 script {
                   
@@ -46,6 +54,7 @@ pipeline {
                 }
             }
         }
+
         
         stage('Cleanup Kubernetes') {
             steps {
