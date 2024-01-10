@@ -31,7 +31,7 @@ pipeline {
                 script {
                   
                     // Test of project
-                    bat  './mvnw test -DskipITs'
+                    bat  './mvnw test -DskipTests'
                 }
             }
         }
