@@ -1,16 +1,12 @@
----
 - name: Deploy Application to Minikube
   hosts: localhost
   gather_facts: false
   connection: local
   vars:
     kubeconfig: "/cygdrive/c/Users/HP/.kube/config" # Update this with the correct path
+    minikube_ip: "192.168.49.2"
 
   tasks:
-    - name: Debug Python Path
-      debug:
-        var: ansible_python | default('Python not found')
-
     - name: Apply Deployment and Service
       command: kubectl apply -f "{{ item }}"
       loop:
@@ -18,3 +14,4 @@
         - service.yml
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
+        K8S_API_SERVER: "https://{{ minikube_ip }}:8443"
