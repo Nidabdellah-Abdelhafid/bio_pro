@@ -30,7 +30,7 @@ pipeline {
             steps {
                 script {
                   
-                    // Build the project and create a Docker image
+                    // Test of project
                     bat  './mvnw test -DskipITs'
                 }
             }
