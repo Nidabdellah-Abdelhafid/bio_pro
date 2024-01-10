@@ -2,8 +2,9 @@
 - name: Deploy Application to Minikube
   hosts: localhost
   gather_facts: false
+  connection: local
   vars:
-    kubeconfig: "/cygdrive/c/Users/HP/.kube/config"
+    kubeconfig: "/cygdrive/c/Users/HP/.kube/config" # Update this with the correct path
 
   tasks:
     - name: Debug Python Path
@@ -11,19 +12,9 @@
         var: ansible_python | default('Python not found')
 
     - name: Apply Deployment and Service
-      k8s:
-        definition: "{{ lookup('file', 'deployment.yml') | from_yaml }}"
-        state: present
-        kubeconfig: "{{ kubeconfig }}"
-        validate: false  # Disable validation temporarily
+      command: kubectl apply -f "{{ item }}"
+      loop:
+        - deployment.yml
+        - service.yml
       environment:
-        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
-
-    - name: Apply Service
-      k8s:
-        definition: "{{ lookup('file', 'service.yml') | from_yaml }}"
-        state: present
-        kubeconfig: "{{ kubeconfig }}"
-        validate: false  # Disable validation temporarily
-      environment:
-        ANSIBLE_REMOTE_TEMP: "{{ remote_tmp }}"  # Set the remote_tmp for the k8s module
+        KUBECONFIG: "{{ kubeconfig }}"
